@@ -21,14 +21,15 @@
     single: ['copyUrl', 'copyPrompt', 'download'],
     pair: ['copyUrl', 'copyPrompt', 'download'],
     list: ['copyUrl'],
-    card: ['copyCode', 'copyPrompt']
+    card: ['copyCode', 'copyPrompt'],
+    block: ['copyUrl', 'copyCode', 'copyPrompt', 'download'] // bare action, used inside DX Banner
   };
-  var DEFAULT_ACTION = { single: 'copyUrl', pair: 'copyUrl', list: 'copyUrl', card: 'copyCode' };
+  var DEFAULT_ACTION = { single: 'copyUrl', pair: 'copyUrl', list: 'copyUrl', card: 'copyCode', block: 'copyUrl' };
   var NAMES = {
-    single: 'Single', pair: 'Pair', list: 'List', card: 'Card',
+    block: 'Block', single: 'Single', pair: 'Pair', list: 'List', card: 'Card',
     copyUrl: 'Copy URL', copyCode: 'Copy code', copyPrompt: 'Copy prompt', download: 'Download'
   };
-  var CODES = { single: 'SGL', pair: 'PAR', list: 'LST', card: 'CRD', copyUrl: 'URL', copyCode: 'COD', copyPrompt: 'PRM', download: 'DWN' };
+  var CODES = { block: 'BLK', single: 'SGL', pair: 'PAR', list: 'LST', card: 'CRD', copyUrl: 'URL', copyCode: 'COD', copyPrompt: 'PRM', download: 'DWN' };
   var VARIANTS = [];
   COMPOSITIONS.forEach(function (c, i) {
     ['dark', 'light'].forEach(function (t, j) { VARIANTS.push({ n: i * 2 + j + 1, composition: c, theme: t, action: DEFAULT_ACTION[c] }); });
@@ -116,7 +117,8 @@
       single: { label: true, helper: true, secondary: false },
       pair: { label: true, helper: true, secondary: true },
       list: { label: true, helper: false, secondary: false },
-      card: { label: true, helper: true, secondary: true }
+      card: { label: true, helper: true, secondary: true },
+      block: { label: false, helper: false, secondary: false }
     }[composition];
   }
 
@@ -178,7 +180,9 @@
   function build(c) {
     var k = c.content, s = c.show, a = c.action, d = k[a];
     var h = '';
-    if (c.composition === 'single') {
+    if (c.composition === 'block') {
+      h += actionBlock(a, d);
+    } else if (c.composition === 'single') {
       h += '<div class="dxc-stack">';
       if (s.label && d.label) h += '<p class="dxc-label" data-slot="2">' + esc(d.label) + '</p>';
       h += actionBlock(a, d);
@@ -338,7 +342,20 @@
     return host;
   }
 
+  /* Inline Marketo form section (preview stand-in), used when formBehavior = inline outside a CTA context */
+  function renderFormBlock(el, theme, content, id) {
+    var d = (content || sample()).download, uid = 'dxf' + Math.random().toString(36).slice(2, 8);
+    var host = document.createElement('div');
+    host.className = 'dxc dxc--' + theme;
+    host.innerHTML = '<div class="dxc-ctx"><div class="dxc-ctx__in"><div class="dxc-formblock" id="' + esc(id || (d.formAnchor || '#sample-data-form').slice(1)) + '">' + formHtml(d, uid) + '</div></div></div>';
+    host.__dxc = { composition: 'block', action: 'download', theme: theme, content: content || sample() };
+    wireForm(host, host);
+    el.appendChild(host);
+    return host;
+  }
+
   root.DXCta = {
+    renderFormBlock: renderFormBlock,
     render: render, normalize: normalize, defaults: defaults, sample: sample, highlight: hl,
     compositions: COMPOSITIONS, actions: ACTIONS, valid: VALID, defaultAction: DEFAULT_ACTION, names: NAMES,
     variants: VARIANTS, variantId: variantId, variantOf: variantOf, variantName: variantName

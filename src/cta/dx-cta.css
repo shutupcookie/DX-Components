@@ -190,7 +190,7 @@
   .dxc-ctx { padding: 48px 40px; }
   .dxc-article { grid-template-columns: minmax(0,1fr); gap: 32px; }
 }
-@container dxc (max-width: 600px) {
+@container dxc (max-width: 420px) {
   .dxc-ctx { padding: 40px 20px; }
   .dxc-ctx__h { font-size: 26px; line-height: 32px; }
   .dxc-ctx__p { font-size: 16px; line-height: 24px; }

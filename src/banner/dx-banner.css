@@ -1,0 +1,119 @@
+/* ==========================================================================
+   DX Banner component · HERE Design System (HDS), brand-developer themes
+   A full-width band for the "now act" moment mid- or end-of-page.
+   Switches: action (button | copyUrl | copyCode | download) × layout
+   (split | stacked) × theme (dark | light). Copy and download actions are
+   DX CTA blocks (dx-cta.css / dx-cta.js), so the band adds no new logic.
+   ========================================================================== */
+
+.dxb {
+  --b-bg: #051920; --b-fg1: #ecf7fc; --b-fg2: #bedfeb; --b-fg3: #89b9cb;
+  --b-accent: #1ef3e4; --b-action: #a0b7f0; --b-focus: #a0b7f0;
+  --b-btn-bg: #1ef3e4; --b-btn-bg-h: #c5fffb; --b-btn-fg: #092732;
+  --b-line: rgba(0,118,160,.40);
+  --b-sans: "FiraGO", "Fira Sans", system-ui, sans-serif;
+  --b-mono: "Fira Code", ui-monospace, monospace;
+  --b-ease: cubic-bezier(0.42, 0, 0.35, 1);
+  container-type: inline-size; container-name: dxb;
+  position: relative; overflow: hidden;
+  background: var(--b-bg); color: var(--b-fg1);
+  font-family: var(--b-sans); font-size: 16px; line-height: 24px; letter-spacing: -0.2px;
+  -webkit-font-smoothing: antialiased;
+}
+.dxb--light {
+  --b-bg: #ecf7fc; --b-fg1: #092732; --b-fg2: #2c596a; --b-fg3: #3f7183;
+  --b-accent: #007d75; --b-action: #1f28e8; --b-focus: #1f28e8;
+  --b-btn-bg: #092732; --b-btn-bg-h: #1e4554; --b-btn-fg: #1ef3e4;
+  --b-line: rgba(0,129,177,.28);
+}
+.dxb *, .dxb *::before, .dxb *::after { box-sizing: border-box; }
+
+/* Background art — dark only, kept to the action side, never behind the text */
+.dxb__art { position: absolute; inset: 0; pointer-events: none; }
+.dxb__art::before { /* faint map grid */
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(114,189,220,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(114,189,220,.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 38%, #000 75%);
+          mask-image: linear-gradient(90deg, transparent 38%, #000 75%);
+}
+.dxb__art::after { /* aqua → violet glow (HDS developer gradient stops) */
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(42% 90% at 88% 30%, rgba(72,218,208,.14), transparent 70%),
+    radial-gradient(36% 70% at 100% 100%, rgba(165,102,255,.12), transparent 70%);
+}
+.dxb--stacked .dxb__art::before { -webkit-mask-image: linear-gradient(180deg, transparent 35%, #000 85%); mask-image: linear-gradient(180deg, transparent 35%, #000 85%); }
+.dxb--stacked .dxb__art::after { background: radial-gradient(50% 60% at 80% 100%, rgba(72,218,208,.12), transparent 70%), radial-gradient(40% 50% at 100% 100%, rgba(165,102,255,.10), transparent 70%); }
+
+.dxb__inner { position: relative; max-width: 1312px; margin: 0 auto; padding: 72px 64px; }
+.dxb--split .dxb__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 64px; align-items: center; }
+.dxb--stacked .dxb__grid { display: flex; flex-direction: column; gap: 32px; }
+.dxb--stacked .dxb__text { max-width: 720px; }
+
+.dxb__text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.dxb__eyebrow { margin: 0; font-family: var(--b-mono); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: .5px; text-transform: uppercase; color: var(--b-accent); }
+.dxb__title { margin: 0; font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -1px; color: var(--b-fg1); text-wrap: balance; }
+.dxb__body { margin: 4px 0 0; font-size: 18px; line-height: 26.5px; color: var(--b-fg2); max-width: 60ch; text-wrap: pretty; }
+
+.dxb__action { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; min-width: 0; width: 100%; }
+.dxb--split .dxb__action { max-width: 560px; justify-self: end; }
+.dxb__action > .dxc { width: 100%; }
+.dxb__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+
+.dxb__btn {
+  appearance: none; border: 0; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 28px; border-radius: 999px; white-space: nowrap;
+  font-family: var(--b-sans); font-size: 14px; line-height: 16px; font-weight: 500; letter-spacing: -0.4px;
+  background: var(--b-btn-bg); color: var(--b-btn-fg);
+  transition: background-color 150ms var(--b-ease);
+}
+.dxb__btn:hover { background: var(--b-btn-bg-h); }
+.dxb__link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: -0.4px; color: var(--b-action); text-decoration: none; }
+.dxb__link:hover { text-decoration: underline; }
+.dxb__link svg, .dxb__btn svg { width: 16px; height: 16px; flex: none; }
+.dxb__btn:focus-visible, .dxb__link:focus-visible { outline: 2px solid var(--b-focus); outline-offset: 2px; }
+.dxb__trust { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; line-height: 16px; color: var(--b-fg3); }
+.dxb__trust span { display: inline-flex; align-items: center; gap: 6px; }
+.dxb__trust svg { width: 12px; height: 12px; color: var(--b-accent); }
+
+/* Embedded CTA blocks: let them fill the action column */
+.dxb .dxc-field, .dxb .dxc-dl, .dxb .dxc-prompt { max-width: none; }
+.dxb--stacked .dxc-field { max-width: 560px; }
+.dxb--stacked .dxc-dl { max-width: 720px; }
+.dxb--split .dxc-code { max-width: 560px; }
+.dxb--stacked .dxc-code { max-width: 880px; }
+
+/* Annotation overlay */
+.dxb--annotate [data-slot] { position: relative; outline: 2px dashed var(--slot); outline-offset: 6px; border-radius: 2px; }
+.dxb--annotate [data-slot]::before {
+  content: attr(data-slot); position: absolute; z-index: 5; top: -16px; left: -16px;
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--slot); color: var(--slot-ink, #fff); font: 700 12px/1 var(--b-sans); letter-spacing: 0; box-shadow: 0 0 0 2px #fff;
+}
+.dxb--annotate [data-slot="1"] { --slot: #7ff7ee; --slot-ink: #092732; }
+.dxb--annotate [data-slot="2"] { --slot: #0e2a33; }
+.dxb--dark.dxb--annotate [data-slot="2"] { --slot: #ecf7fc; --slot-ink: #092732; }
+.dxb--annotate [data-slot="3"] { --slot: #a020f0; }
+.dxb--annotate [data-slot="4"] { --slot: #f0157f; }
+.dxb--annotate [data-slot="5"] { --slot: #2a2ef0; }
+.dxb--annotate [data-slot="6"] { --slot: #12a86b; }
+
+/* Responsive (container) */
+@container dxb (max-width: 1023px) {
+  .dxb__inner { padding: 56px 40px; }
+  .dxb--split .dxb__grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .dxb--split .dxb__action { justify-self: start; max-width: 640px; }
+  .dxb__title { font-size: 30px; line-height: 36px; }
+}
+@container dxb (max-width: 600px) {
+  .dxb__inner { padding: 48px 20px; }
+  .dxb__title { font-size: 26px; line-height: 32px; letter-spacing: -0.5px; }
+  .dxb__body { font-size: 16px; line-height: 24px; }
+  .dxb__row { flex-direction: column; align-items: stretch; width: 100%; }
+  .dxb__btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .dxb * { transition: none !important; } }
