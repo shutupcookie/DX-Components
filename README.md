@@ -1,6 +1,6 @@
-# HERE DX components
+# HERE DX Studio
 
-Interactive reference for the reusable Developer Experience (DX) page components on here.com.
+Where HERE developer pages get designed, built and reviewed: the reusable page components developed under the HERE Developer Experience (DX) Strategy, page examples, and page reviews. Built on the HERE Design System (HDS). For internal use only.
 One static site: no build step.
 
 | Path | What it is |

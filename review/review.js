@@ -85,7 +85,7 @@
   function bar() {
     var el = document.createElement('div');
     el.className = 'rv-bar';
-    el.innerHTML = '<div class="rv-bar__in"><a class="rv-home" href="../../index.html" aria-label="All DX components">←</a><div class="rv-title"><b>' + esc(C.meta.title) + ' · page review</b><span id="rvStatus"></span></div>' +
+    el.innerHTML = '<div class="rv-bar__in"><a class="rv-home" href="../../index.html" aria-label="HERE DX Studio home">←</a><div class="rv-title"><b>' + esc(C.meta.title) + ' · page review</b><span id="rvStatus"></span></div>' +
       '<div class="rv-btns"><button type="button" class="rv-st" id="rvSt" aria-expanded="false" data-s="open"><i aria-hidden="true"></i><span>Open for comments</span></button>' +
       '<button type="button" class="rv-btn" id="rvHow" aria-expanded="false">How it works</button>' +
       '<button type="button" class="rv-btn" id="rvLog" aria-expanded="false">Versions</button>' +

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>HERE DX Components</title>
+<title>HERE DX Studio</title>
 <style>
 @font-face{font-family:"FiraGO";font-weight:400;src:url(fonts/firago-latin-400-normal.woff2) format("woff2")}
 @font-face{font-family:"FiraGO";font-weight:500;src:url(fonts/firago-latin-500-normal.woff2) format("woff2")}
@@ -20,8 +20,8 @@ html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font:400 16px/24px "FiraGO","Fira Sans",system-ui,sans-serif;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1200px;margin:0 auto;padding:56px max(20px,env(safe-area-inset-right,0px)) 72px max(20px,env(safe-area-inset-left,0px))}
 .eyebrow{margin:0 0 8px;font:500 12px/16px "Fira Code",monospace;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
-h1{margin:0;font-size:40px;line-height:48px;font-weight:700;letter-spacing:-1px}
-.lede{margin:12px 0 0;text-wrap:pretty;color:var(--fg2);font-size:18px;line-height:26.5px;max-width:62ch}
+h1{margin:0;font-size:48px;line-height:54px;font-weight:700;letter-spacing:-1px}
+.lede{margin:12px 0 0;text-wrap:pretty;color:var(--fg2);font-size:18px;line-height:26.5px;max-width:68ch}
 .jump{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none}
 .jump a{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);color:var(--fg);text-decoration:none;font-size:14px;font-weight:500}
 .jump a:hover{box-shadow:inset 0 0 0 1px var(--accent)}
@@ -91,6 +91,25 @@ a.card:focus-visible{outline:2px solid var(--action);outline-offset:2px}
 .xcard code{font:500 12px/18px "Fira Code",monospace;color:var(--fg3);overflow-wrap:anywhere}
 .foot{margin:40px 0 0;font-size:13px;color:var(--fg3)}
 
+/* Brand bar + intro */
+.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top__in{max-width:1200px;margin:0 auto;padding:10px max(20px,env(safe-area-inset-right,0px)) 10px max(20px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none;font-size:15px;white-space:nowrap}
+.brand:focus-visible,.topnav a:focus-visible{outline:2px solid var(--action);outline-offset:3px;border-radius:6px}
+.brand__t b{font-weight:700}
+.mark{position:relative;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:#092732;color:#1ef3e4;font:500 13px/1 "Fira Code",monospace;letter-spacing:-.5px;box-shadow:inset 0 0 0 1px rgba(30,243,228,.35)}
+.mark::after{content:"";position:absolute;right:-3px;top:-3px;width:8px;height:8px;border-radius:50%;background:#1ef3e4;box-shadow:0 0 0 2px var(--bg)}
+.topnav{margin-left:auto;display:flex;gap:4px}
+.topnav a{color:var(--fg2);text-decoration:none;font-size:14px;font-weight:500;padding:6px 10px;border-radius:999px}
+.topnav a:hover{color:var(--fg);background:var(--chip)}
+.intro{padding:8px 0 4px}
+h1 span{color:var(--accent)}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none}
+.stats li{height:32px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);font-size:13px;color:var(--fg2)}
+.stats b{font:500 13px/1 "Fira Code",monospace;color:var(--fg)}
+html{scroll-padding-top:72px}
+@media (max-width:600px){.topnav a{padding:6px 7px;font-size:13px}.brand__t{display:none}}
+
 @media (max-width:760px){
   h1{font-size:30px;line-height:36px}
   .zone{padding:22px 16px;border-radius:12px;margin-left:-4px;margin-right:-4px}
@@ -102,15 +121,19 @@ a.card:focus-visible{outline:2px solid var(--action);outline-offset:2px}
 </style>
 </head>
 <body>
+<header class="top"><div class="top__in">
+  <a class="brand" href="./" aria-label="HERE DX Studio, home"><span class="mark" aria-hidden="true">DX</span><span class="brand__t"><b>HERE DX</b> Studio</span></a>
+  <nav class="topnav" aria-label="Sections"><a href="#reviews">Reviews</a><a href="#components">Components</a><a href="#examples">Examples</a></nav>
+</div></header>
 <main class="wrap">
-  <p class="eyebrow">HERE Developer Experience · 2026–27</p>
-  <h1>DX components</h1>
-  <p class="lede">Reusable page components developed under the DX Strategy. For internal use only.</p>
-  <ul class="jump" aria-label="On this page">
-    <li><a href="#reviews"><b>01</b>Page reviews</a></li>
-    <li><a href="#components"><b>02</b>Components</a></li>
-    <li><a href="#examples"><b>03</b>Page examples</a></li>
-  </ul>
+  <div class="intro">
+    <p class="eyebrow">HERE Developer Experience · 2026–27</p>
+    <h1>HERE DX <span>Studio</span></h1>
+    <p class="lede">Where HERE developer pages get designed, built and reviewed. Reusable page components developed under the HERE Developer Experience (DX) Strategy, built on the HERE Design System (HDS). For internal use only.</p>
+    <ul class="stats" aria-label="At a glance">
+      <li><b>3</b> components</li><li><b>24</b> variants</li><li><b>2</b> page examples</li><li id="inReview"><b>2</b> pages in review</li><li>Built on HDS</li>
+    </ul>
+  </div>
 
   <section class="zone zone--rev" id="reviews" aria-labelledby="h-rev">
     <div class="zone__head">
@@ -159,7 +182,7 @@ a.card:focus-visible{outline:2px solid var(--action);outline-offset:2px}
       <a class="xcard" href="examples/hlr-mcp/index.html"><img src="assets/ex-hlr.jpg" alt=""><div class="body"><h3>HERE Location Reasoning</h3><code>/developer/location-reasoning-mcp</code><div class="tags"><span class="tag">Example · draft copy</span></div></div></a>
     </div>
   </section>
-  <p class="foot">Internal use only · not indexed by search or answer engines.</p>
+  <p class="foot">HERE DX Studio · built on the HERE Design System (HDS) · internal use only · not indexed by search or answer engines.</p>
 </main>
 <script>
 /* Live review status and comment counts from /api/status. The page works without it. */
@@ -172,6 +195,8 @@ a.card:focus-visible{outline:2px solid var(--action);outline-offset:2px}
   }
   fetch('api/status', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
     if (!j || !j.pages) return;
+    var n = j.pages.filter(function (p) { return p.status === 'open'; }).length, ir = document.getElementById('inReview');
+    if (ir) ir.innerHTML = '<b>' + n + '</b> page' + (n === 1 ? '' : 's') + ' open for comments';
     j.pages.forEach(function (p) {
       var card = document.querySelector('.rcard[data-page="' + p.page + '"]'); if (!card) return;
       var st = card.querySelector('.st'); st.setAttribute('data-s', p.status); st.querySelector('span').textContent = LABEL[p.status] || LABEL.open;
