@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>HLR MCP Page Example</title>
+<link rel="stylesheet" href="../../src/hero/dx-hero.css">
+<link rel="stylesheet" href="../../src/cta/dx-cta.css">
+<link rel="stylesheet" href="../../src/banner/dx-banner.css">
+<link rel="stylesheet" href="../ex.css">
+</head>
+<body>
+<div class="exbar"><div class="exbar__in">
+  <a href="../../index.html">← All DX components</a>
+  <span class="exbar__tag">Page examples</span>
+  <a href="../docs-mcp/index.html">HERE Docs MCP</a>
+  <a href="../hlr-mcp/index.html" aria-current="page">HERE Location Reasoning</a>
+  <span class="exbar__sp"></span>
+  <button type="button" class="exbar__btn" id="toggleComps" aria-pressed="false">Show components</button>
+  <a href="#build">Build list ↓</a>
+</div></div>
+<div class="crumbs"><div class="crumbs__in"><a href="#">Developers</a> / HERE Location Reasoning <span style="opacity:.7">· mock of /developer/location-reasoning-mcp</span></div></div>
+<main id="page"></main>
+<section class="build" id="build"><div class="build__in">
+  <h2>Build list</h2>
+  <p>Every section on this page, the component it uses and the Contentful entry behind it. Draft copy from the page brief; items flagged in yellow need Product.</p>
+  <div class="build__wrap"><table><thead><tr><th>#</th><th>Section</th><th>Component</th><th>Variant</th><th>Contentful</th><th>Status</th></tr></thead><tbody id="buildRows"></tbody></table></div>
+  <div class="build__row"><button type="button" class="build__btn" id="copyEntries">Copy page entries (JSON)</button><span class="build__note">One JSON file with every entry on the page, ready for the Contentful build ticket.</span></div>
+</div></section>
+<footer class="pfoot"><div class="pfoot__in"><span>Page example · developed under the DX Strategy · internal use only</span><a href="../../hero/index.html">DX Hero</a><a href="../../cta/index.html">DX CTA</a><a href="../../banner/index.html">DX Banner</a></div></footer>
+<script src="../../src/hero/dx-hero.js"></script>
+<script src="../../src/cta/dx-cta.js"></script>
+<script src="../../src/banner/dx-banner.js"></script>
+<script src="../ex.js"></script>
+<script>
+(function () {
+  var AWS = 'https://aws.amazon.com/marketplace/pp/prodview-5hdq5s532zfrw';
+  var KIRO = 'https://kiro.dev/launch/powers/add?name=here-location-reasoning-plugin';
+  var URL = 'https://hlr.here.ai/mcp';
+  var hero = DXHero.sample('snippet');
+  hero.eyebrow = 'HERE Location Reasoning';
+  hero.heading = 'Give your AI agents real-world location skills';
+  hero.sub = 'HERE Location Reasoning is an MCP server that gives AI agents live geocoding, routing, traffic, place search and map rendering as tool calls, so they work from real location data instead of guessing.';
+  hero.copyField = { value: URL, label: 'Copy the MCP URL', copiedLabel: 'Copied' };
+  hero.primaryCta = { label: 'Subscribe on AWS', href: AWS };
+  hero.secondaryCta = { label: 'Build with Kiro', href: KIRO };
+  hero.trust = ['Pay-as-you-go on AWS Marketplace', 'Any MCP client', 'Available as a Kiro Power'];
+  hero.snippet = { file: 'AI agent · tool call', prompt: 'Find EV charging stations along my route from Berlin to Munich.', chips: ['geocoding', 'routing', 'EV charging search'],
+    code: 'POST https://hlr.here.ai/mcp\nAuthorization: Bearer <YOUR_HERE_BEARER_TOKEN>\n\n{\n  "method": "tools/call",\n  "params": {\n    "name": "hlr___geocode",\n    "arguments": { "query": "Alexanderplatz, Berlin" }\n  }\n}',
+    caption: 'Illustration. Tool call per the HLR docs; Product to confirm the request format.' };
+  var connect = DXHero.sample('tabs');
+  connect.eyebrow = 'Connect';
+  connect.heading = 'Connect your agent in three steps';
+  connect.sub = 'Point any MCP client at the HERE Location Reasoning server, sign in, and ask a location question.';
+  connect.steps = [
+    { title: 'Add the server', body: 'Add `https://hlr.here.ai/mcp` to your client’s MCP config, or install the Kiro Power.' },
+    { title: 'Sign in', body: 'Sign in with your HERE account in the browser, or pass a HERE bearer token from your own app.' },
+    { title: 'Ask a location question', body: 'Try: "Find EV charging stations along my route from Berlin to Munich." Check the tool calls in the trace.' }];
+  connect.tabs = [
+    { label: 'Kiro', file: 'Kiro Power', code: '# Add HERE Location Reasoning to Kiro as a Power\nhttps://kiro.dev/launch/powers/add?name=here-location-reasoning-plugin' },
+    { label: 'Claude Code', file: 'Terminal', code: '# Add the HERE Location Reasoning MCP server\n$ claude mcp add --transport http here-location-reasoning https://hlr.here.ai/mcp\n\n# Sign in when your client prompts you' },
+    { label: 'Cursor', file: '.cursor/mcp.json', code: '{\n  "mcpServers": {\n    "here-location-reasoning": {\n      "url": "https://hlr.here.ai/mcp"\n    }\n  }\n}' },
+    { label: 'Python', file: 'agent.py', code: 'from mcp.client.streamable_http import streamablehttp_client\n\nasync with streamablehttp_client(\n    "https://hlr.here.ai/mcp",\n    headers={"Authorization": f"Bearer {JWT_TOKEN}"},\n) as (read, write, _):\n    ...' }];
+  connect.copyField = { value: URL, label: 'Copy URL', copiedLabel: 'Copied' };
+  connect.secondaryCta = { label: 'Read the HLR docs', href: 'https://docs.here.com/location-reasoning/docs/hlroverview' };
+  connect.trust = ['Browser sign-in or a HERE bearer token'];
+  var cta = DXCta.sample();
+  cta.card.copyPrompt = { heading: 'Ask your agent', description: 'Paste this into any agent connected to HERE Location Reasoning.' };
+  cta.copyPrompt.prompt = 'Find EV charging stations along my route from Berlin to Munich.';
+  cta.copyPrompt.helper = ['Geocodes, routes, then searches the corridor'];
+  cta.copyPrompt.secondary = { label: 'See the tools reference', href: 'https://docs.here.com/location-reasoning/docs/hlroverview', style: 'link' };
+  var listC = DXCta.sample();
+  listC.list = { title: 'HERE Location Reasoning', items: [
+    { label: 'MCP server URL', value: URL }, { label: 'Kiro Power', value: KIRO },
+    { label: 'AWS Marketplace', value: AWS }, { label: 'Docs', value: 'https://docs.here.com/location-reasoning' }],
+    secondary: { label: 'Explore HLR with our team', href: 'https://www.here.com/contact', style: 'link' },
+    helper: ['Sign in with your browser, or pass a HERE bearer token'] };
+  var band = DXBanner.sample();
+  band.button = { eyebrow: 'Pay as you go', heading: 'Run Location Reasoning in production', body: 'Subscribe on AWS Marketplace and pay as you go, or add HERE Location Reasoning to Kiro as a Power.',
+    primary: { label: 'Subscribe on AWS', href: AWS }, secondary: { label: 'Build with Kiro', href: KIRO },
+    trust: ['Pay-as-you-go in AWS Marketplace', 'Cloud, in your environment or on the edge'] };
+  DXExample.build({ url: '/developer/location-reasoning-mcp', sections: [
+    { type: 'hero', name: '1 Hero', note: 'Request format: Product to confirm', cfg: { media: 'snippet', theme: 'dark', layout: 'horizontal', content: hero, show: { caption: true, secondaryCta: true } } },
+    { type: 'hero', name: '2 Connect', note: 'Client configs: Product to verify', cfg: { media: 'tabs', theme: 'light', layout: 'horizontal', headingLevel: 2, content: connect, show: { primaryCta: false } } },
+    { type: 'cards', name: '3 What your agent can do', ground: 'light', eyebrow: 'Tools', heading: 'What your agent can do', sub: 'Live HERE location services, called as tools. Categories from the HLR docs; exact tool names are in the tools reference.',
+      cards: [['Geocoding and search', 'Converts addresses to coordinates and back.'], ['Routing', 'Routes with distance, duration, turn-by-turn steps, EV charging stops and rest stops.'], ['Public transit', 'Plans scheduled transit itineraries.'],
+        ['Search and discovery', 'Finds places, EV charging stations and services near a point or along a route.'], ['Traffic', 'Real-time traffic flow for locations, corridors and route segments.'], ['Isolines', 'Drive-time or distance areas around a point.']],
+      limits: 'Also: map rendering for routes, traffic, isolines and transit.', existingLabel: 'Existing · card grid', existingEntry: 'cardGrid',
+      cta: { composition: 'card', action: 'copyPrompt', theme: 'light', content: cta }, ctaName: '3b Ask your agent' },
+    { type: 'banner', name: '4 Subscribe', cfg: { action: 'button', theme: 'dark', layout: 'split', content: band } },
+    { type: 'list', name: '5 Connection details', ground: 'canvas', eyebrow: 'Reference', heading: 'Connection details', sub: 'Everything your agent or team needs to connect, in one place.',
+      cta: { composition: 'list', action: 'copyUrl', theme: 'light', content: listC, show: { label: true, helper: true, secondary: true } }, ctaName: '5 Connection details' },
+    { type: 'faq', name: '6 FAQ', ground: 'light', heading: 'Setup and usage questions', existingLabel: 'Existing · FAQ accordion', existingEntry: 'faqAccordion', note: 'Disjoint from the solutions page FAQ', items: [
+      ['Which MCP clients work with HERE Location Reasoning?', 'Any LLM or agent framework that supports MCP. The docs include examples for the MCP SDKs, LangChain, Strands Agents and PydanticAI, and it is available as a Kiro Power.'],
+      ['How does my agent authenticate?', 'Sign in with your browser when your client connects, or pass a HERE bearer token from your own application in the Authorization header.'],
+      ['What can the tools do?', 'Geocoding, routing (including EV charging and rest stops), public transit, place and EV charger search, real-time traffic, isolines and map rendering. The tools reference lists the exact tool names.'],
+      ['How do I pay for production use?', 'Subscribe on AWS Marketplace and pay as you go, or add it to Kiro as a Power. For an enterprise evaluation, <a href="https://www.here.com/contact">explore HLR with our team</a>.'],
+      ['How is it different from the HERE documentation MCP?', 'The documentation MCP helps your agent write HERE code. HERE Location Reasoning gives your agent live location tools while it runs. Many teams use both. <a href="../docs-mcp/index.html">See the Docs MCP example</a>.']] }
+  ] });
+})();
+</script>
+</body>
+</html>

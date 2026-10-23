@@ -1,0 +1,10 @@
+{
+  "name": "dx-components",
+  "private": true,
+  "type": "module",
+  "description": "HERE DX components reference site with a review API (comments and copy versions) on Neon Postgres.",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  }
+}

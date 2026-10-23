@@ -1,0 +1,111 @@
+/* Review chrome: bar, section comment buttons, edit drawer, popovers, toast.
+   Single deliberate look (the mock page is fixed HDS light/dark sections). */
+body { background: #ecf7fc; color: #092732; }
+.rv-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60; background: #03141a; color: #bedfeb; border-bottom: 1px solid rgba(114,189,220,.2); font: 400 13px/18px "FiraGO", "Fira Sans", system-ui, sans-serif; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 61; background: #03141a; }
+.rv-bar__in { max-width: 1440px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.rv-title { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 260px; }
+.rv-title b { color: #ecf7fc; font-weight: 500; font-size: 14px; }
+.rv-title span { color: #89b9cb; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rv-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.rv-btn { appearance: none; border: 0; cursor: pointer; height: 32px; padding: 0 14px; border-radius: 999px; font: 500 13px/1 "FiraGO", "Fira Sans", sans-serif; background: rgba(114,189,220,.14); color: #ecf7fc; white-space: nowrap; }
+.rv-btn:hover { background: rgba(114,189,220,.26); }
+.rv-btn[aria-pressed="true"], .rv-btn--primary { background: #1ef3e4; color: #092732; }
+.rv-btn--primary:hover { background: #c5fffb; }
+.rv-btn:focus-visible, .rv-cbtn:focus-visible, .rv-drawer button:focus-visible, .rv-drawer input:focus-visible, .rv-drawer textarea:focus-visible { outline: 2px solid #a0b7f0; outline-offset: 2px; }
+
+.rv-pop { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(100% + 8px); width: min(380px, calc(100vw - 32px)); background: #ffffff; color: #092732; border-radius: 8px; box-shadow: 0 16px 48px -12px rgba(1,10,14,.45); padding: 16px 18px; font-size: 13px; line-height: 19px; }
+.rv-pop h3 { margin: 0 0 8px; font-size: 15px; line-height: 20px; font-weight: 500; }
+.rv-pop ol, .rv-pop ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: #2c596a; }
+.rv-pop li b { color: #092732; font-weight: 500; }
+
+.rv-sec { position: relative; }
+.rv-cbtn { position: absolute; z-index: 30; top: 14px; right: max(14px, env(safe-area-inset-right, 0px)); appearance: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; font: 500 12px/1 "FiraGO", "Fira Sans", sans-serif; background: #ffffff; color: #092732; box-shadow: 0 2px 10px rgba(1,10,14,.25); opacity: .92; }
+.rv-cbtn:hover { opacity: 1; }
+.rv-cbtn svg { width: 14px; height: 14px; }
+
+/* Edit drawer */
+.rv-drawer { position: fixed; z-index: 80; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); background: #ffffff; color: #092732; box-shadow: -16px 0 48px -16px rgba(1,10,14,.4); display: flex; flex-direction: column; font: 400 14px/20px "FiraGO", "Fira Sans", system-ui, sans-serif; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.rv-dh { display: flex; align-items: center; gap: 10px; padding: 14px 16px 14px 20px; border-bottom: 1px solid rgba(0,129,177,.16); }
+.rv-dh b { font-size: 16px; font-weight: 500; flex: 1; }
+.rv-dh .dirty { font-size: 12px; color: #79670f; background: #fdf5d2; border-radius: 999px; padding: 2px 8px; }
+.rv-x { appearance: none; border: 0; background: none; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; color: #2c596a; font-size: 20px; line-height: 1; }
+.rv-x:hover { background: rgba(0,148,215,.08); }
+.rv-db { flex: 1; overflow: auto; padding: 8px 20px 20px; }
+.rv-db details { border-bottom: 1px solid rgba(0,129,177,.14); }
+.rv-db summary { cursor: pointer; padding: 12px 0; font-weight: 500; }
+.rv-group { display: flex; flex-direction: column; gap: 12px; padding: 0 0 16px; }
+.rv-f { display: flex; flex-direction: column; gap: 4px; }
+.rv-f label { font-size: 12px; font-weight: 500; color: #3f7183; text-transform: uppercase; letter-spacing: .3px; }
+.rv-f input, .rv-f textarea { width: 100%; font: 400 14px/20px "FiraGO", "Fira Sans", system-ui, sans-serif; color: #092732; background: #f5fbfd; border: 1px solid rgba(0,129,177,.28); border-radius: 4px; padding: 8px 10px; resize: vertical; box-sizing: border-box; }
+.rv-f textarea.code { font: 400 12px/18px "Fira Code", ui-monospace, monospace; white-space: pre; }
+.rv-item { border: 1px solid rgba(0,129,177,.16); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+.rv-item__h { display: flex; align-items: center; font-size: 12px; font-weight: 500; color: #3f7183; }
+.rv-row { display: flex; gap: 6px; align-items: center; }
+.rv-row input { flex: 1; min-width: 0; }
+.rv-mini { appearance: none; border: 0; cursor: pointer; margin-left: auto; height: 26px; padding: 0 10px; border-radius: 999px; background: none; color: #2c596a; box-shadow: inset 0 0 0 1px rgba(0,129,177,.28); font: 500 12px/1 "FiraGO", "Fira Sans", sans-serif; }
+.rv-mini:hover { background: rgba(0,148,215,.07); }
+.rv-df { border-top: 1px solid rgba(0,129,177,.16); padding: 14px 20px 18px; display: flex; flex-direction: column; gap: 10px; }
+.rv-df .rv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.rv-df .rv-btn { background: rgba(0,148,215,.08); color: #092732; }
+.rv-df .rv-btn--primary { background: #092732; color: #1ef3e4; }
+.rv-df .rv-btn--primary:disabled { opacity: .5; cursor: default; }
+.rv-msg { font-size: 12px; color: #2c596a; min-height: 16px; }
+
+.rv-toast { position: fixed; z-index: 90; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: #092732; color: #ecf7fc; padding: 10px 16px; border-radius: 999px; font: 500 13px/18px "FiraGO", "Fira Sans", sans-serif; box-shadow: 0 8px 24px rgba(1,10,14,.35); max-width: calc(100vw - 32px); }
+@media (max-width: 600px) { .rv-cbtn span { display: none; } .rv-cbtn { padding: 0 9px; } }
+
+/* ---- Vercel review additions ---- */
+.rv-home { color: #bedfeb; text-decoration: none; font-size: 18px; width: 32px; height: 32px; display: inline-grid; place-items: center; border-radius: 50%; }
+.rv-home:hover { background: rgba(114,189,220,.14); color: #ecf7fc; }
+.rv-btn .n, .rv-cbtn .n, .rv-tbtn .n { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 6px; border-radius: 999px; background: #f0157f; color: #fff; font-size: 11px; font-weight: 500; box-sizing: border-box; }
+.rv-off { max-width: 1440px; margin: 0 auto; padding: 8px 16px 10px; color: #fdf5d2; font-size: 12px; }
+.rv-cbtn .n { margin-left: 0; }
+.rv-tbtn { appearance: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; height: 26px; padding: 0 8px; border-radius: 999px; background: #ffffff; color: #092732; box-shadow: 0 1px 6px rgba(1,10,14,.2); font: 500 12px/1 "FiraGO", "Fira Sans", sans-serif; opacity: 0; transition: opacity 120ms; flex: none; }
+.rv-tbtn svg { width: 14px; height: 14px; }
+.rv-tbtn .n { margin-left: 4px; }
+.rv-tbtn.has, .rv-tbtn:focus-visible, [data-rv-target]:hover > .rv-tbtn, summary:hover > .rv-tbtn { opacity: 1; }
+@media (hover: none) { .rv-tbtn { opacity: 1; } }
+.rv-tbtn:focus-visible { outline: 2px solid #1f28e8; outline-offset: 2px; }
+.tcard { position: relative; }
+.tcard > .rv-tbtn { position: absolute; top: 10px; right: 10px; }
+.faq summary > .rv-tbtn { margin-left: auto; }
+.faq summary:has(> .rv-tbtn)::after { margin-left: 4px; }
+.after-cards > .rv-tbtn { position: absolute; top: -34px; right: 0; opacity: 1; }
+@keyframes rvflash { 0%, 60% { box-shadow: 0 0 0 3px #f0157f; } 100% { box-shadow: 0 0 0 3px rgba(240,21,127,0); } }
+.rv-flash { animation: rvflash 1.6s ease-out; border-radius: 4px; }
+
+.rv-panel .rv-on { display: flex; align-items: center; gap: 10px; padding: 10px 20px; background: #f5fbfd; border-bottom: 1px solid rgba(0,129,177,.16); font-size: 13px; color: #2c596a; }
+.rv-panel .rv-on span { flex: 1; min-width: 0; font-weight: 500; color: #092732; }
+.rv-panel .rv-db { padding-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.rv-link { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; color: #1f28e8; font: 500 13px/18px "FiraGO", "Fira Sans", sans-serif; }
+.rv-link:hover { text-decoration: underline; }
+.rv-link:focus-visible { outline: 2px solid #1f28e8; outline-offset: 2px; }
+.rv-compose, .rv-reply { display: flex; flex-direction: column; gap: 10px; }
+.rv-compose { padding-bottom: 14px; border-bottom: 1px solid rgba(0,129,177,.16); }
+.rv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.rv-panel .rv-btn { background: rgba(0,148,215,.08); color: #092732; }
+.rv-panel .rv-btn--primary { background: #092732; color: #1ef3e4; }
+.rv-panel .rv-btn:disabled { opacity: .5; cursor: default; }
+.rv-as { font-size: 13px; color: #2c596a; display: flex; gap: 8px; align-items: baseline; }
+.rv-as b { color: #092732; font-weight: 500; }
+.rv-tabs { display: flex; gap: 6px; }
+.rv-tabs button { appearance: none; border: 0; cursor: pointer; height: 28px; padding: 0 12px; border-radius: 999px; background: none; box-shadow: inset 0 0 0 1px rgba(0,129,177,.28); color: #2c596a; font: 500 12px/1 "FiraGO", "Fira Sans", sans-serif; }
+.rv-tabs button span { opacity: .7; margin-left: 2px; }
+.rv-tabs button[aria-pressed="true"] { background: #092732; color: #ecf7fc; box-shadow: none; }
+.rv-tabs button:focus-visible { outline: 2px solid #1f28e8; outline-offset: 2px; }
+.rv-empty { margin: 8px 0; color: #3f7183; font-size: 13px; }
+.rv-thread { border: 1px solid rgba(0,129,177,.2); border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; background: #fff; }
+.rv-thread.is-resolved { background: #f5fbfd; }
+.rv-thread.is-resolved .rv-c p { color: #3f7183; }
+.rv-where { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; text-align: left; font: 500 12px/16px "FiraGO", "Fira Sans", sans-serif; color: #007d75; }
+.rv-where:hover { text-decoration: underline; }
+.rv-c + .rv-c { padding-top: 10px; border-top: 1px solid rgba(0,129,177,.12); }
+.rv-c__h { display: flex; gap: 8px; align-items: baseline; font-size: 13px; }
+.rv-c__h b { font-weight: 500; }
+.rv-c__h time { color: #3f7183; font-size: 12px; }
+.rv-c p { margin: 4px 0 0; font-size: 14px; line-height: 20px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.rv-t__a { display: flex; gap: 16px; }
+.rv-mini--add { margin-left: 0; align-self: flex-start; }
+.rv-fatal { padding: 40px 16px; text-align: center; }
+.rv-drawer { top: var(--rv-bar-h, 0px); padding-top: 0; z-index: 55; }

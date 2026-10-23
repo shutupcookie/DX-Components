@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "url": "/developer/here-docs-mcp",
+    "title": "HERE Docs MCP"
+  },
+  "hero": {
+    "eyebrow": "HERE Documentation MCP",
+    "heading": "Give your AI coding agent the official HERE docs",
+    "sub": "The HERE documentation MCP is a free MCP server that connects Claude, Cursor, Copilot or any HTTP MCP client to current HERE guides, API references and changelogs.",
+    "copyValue": "https://docs.here.com/mcp",
+    "copyLabel": "Copy the MCP URL",
+    "buttonLabel": "Get a free API key",
+    "buttonHref": "https://platform.here.com/sign-up",
+    "trust": [
+      "Free",
+      "No HERE account needed",
+      "Any HTTP MCP client"
+    ],
+    "snippetFile": "AI coding agent · routes-request.http",
+    "prompt": "Using the HERE documentation MCP server, show me the code for an API request to get a route from Chicago to St. Louis.",
+    "chips": [
+      "search",
+      "get-endpoint",
+      "fetch"
+    ],
+    "code": "GET https://router.hereapi.com/v8/routes\n  ?transportMode=car\n  &origin=41.8781,-87.6298\n  &destination=38.6270,-90.1994\n  &return=summary\n  &apiKey=YOUR_API_KEY",
+    "caption": "Illustration. Final image: capture from the Claude walkthrough."
+  },
+  "setup": {
+    "eyebrow": "Set it up",
+    "heading": "Connected in under a minute",
+    "sub": "Add one URL to your AI tool's MCP configuration. No API key, no HERE account, no authentication.",
+    "steps": [
+      {
+        "title": "Add the server",
+        "body": "Add `https://docs.here.com/mcp` to your tool's MCP config as an HTTP server. Pick your client for the exact config."
+      },
+      {
+        "title": "Test the connection",
+        "body": "Start a new chat and ask: \"List the tools available from the HERE documentation MCP server.\""
+      },
+      {
+        "title": "Build, and check the trace",
+        "body": "Ask for HERE code, then check the tool trace to confirm your agent used the MCP."
+      }
+    ],
+    "tabs": [
+      {
+        "label": "VS Code",
+        "file": ".vscode/mcp.json",
+        "code": "{\n  \"servers\": {\n    \"here-docs\": {\n      \"url\": \"https://docs.here.com/mcp\",\n      \"type\": \"http\"\n    }\n  }\n}"
+      },
+      {
+        "label": "Claude Code",
+        "file": "Terminal",
+        "code": "# Add the HERE documentation MCP server\n$ claude mcp add --transport http here-docs https://docs.here.com/mcp\n\n# Check it is connected\n$ claude mcp list"
+      },
+      {
+        "label": "Cursor",
+        "file": ".cursor/mcp.json",
+        "code": "{\n  \"mcpServers\": {\n    \"here-docs\": {\n      \"url\": \"https://docs.here.com/mcp\"\n    }\n  }\n}"
+      },
+      {
+        "label": "Kiro",
+        "file": ".kiro/settings/mcp.json",
+        "code": "{\n  \"mcpServers\": {\n    \"here-docs\": {\n      \"url\": \"https://docs.here.com/mcp\"\n    }\n  }\n}"
+      }
+    ],
+    "copyValue": "https://docs.here.com/mcp",
+    "copyLabel": "Copy URL",
+    "linkLabel": "Step-by-step walkthrough",
+    "linkHref": "#walkthrough",
+    "trust": [
+      "Works with any MCP client that supports HTTP"
+    ]
+  },
+  "tools": {
+    "eyebrow": "Six tools",
+    "heading": "What your agent can do",
+    "sub": "The HERE documentation MCP gives your agent six tools for current HERE documentation. Tool names are verbatim.",
+    "cards": [
+      {
+        "name": "list-endpoints",
+        "text": "Lists API paths, methods and summaries."
+      },
+      {
+        "name": "get-endpoint",
+        "text": "Returns full detail for one endpoint."
+      },
+      {
+        "name": "search-specs",
+        "text": "Searches paths, operations and schemas."
+      },
+      {
+        "name": "list-specs",
+        "text": "Lists every API spec it can reach."
+      },
+      {
+        "name": "search",
+        "text": "Full-text search across the docs; returns page IDs."
+      },
+      {
+        "name": "fetch",
+        "text": "Returns a full docs page by ID."
+      }
+    ],
+    "limits": "Public docs only · no API calls · can't create API keys",
+    "promptLabel": "Try this prompt",
+    "prompt": "Using the HERE documentation MCP server, tell me how to get an API key for the HERE Matrix Routing API.",
+    "promptButton": "Copy prompt",
+    "promptLinkLabel": "Then run the code with a free API key",
+    "promptLinkHref": "#run",
+    "promptHelper": [
+      "Works in Claude, Cursor, Windsurf and Copilot"
+    ]
+  },
+  "runCode": {
+    "eyebrow": "Run the code",
+    "heading": "Your agent wrote the code. Run it with a free API key.",
+    "body": "Create a HERE platform account to get your key. The MCP is free; the code it helps write runs on your API key.",
+    "buttonLabel": "Get a free API key",
+    "buttonHref": "https://platform.here.com/sign-up",
+    "linkLabel": "Not ready to add a card? Plan an evaluation with us",
+    "linkHref": "https://www.here.com/contact",
+    "trust": [
+      "Credit card required at sign-up",
+      "Free allowance: Product to confirm"
+    ]
+  },
+  "faq": {
+    "heading": "Questions developers ask",
+    "items": [
+      {
+        "q": "What is the HERE documentation MCP?",
+        "a": "A documentation-focused MCP server that gives AI coding agents direct access to official HERE developer docs: guides, API references, data specs and changelogs. It is free and needs no HERE account."
+      },
+      {
+        "q": "Does it call HERE APIs or use my API key?",
+        "a": "No. It reads public documentation only. It does not run HERE API requests, read credentials or create API keys. The code your agent writes needs a HERE API key to run."
+      },
+      {
+        "q": "Do I need a HERE account to use the MCP?",
+        "a": "No. The server at https://docs.here.com/mcp needs no authentication. You need a HERE platform account only when you run the code your agent writes."
+      },
+      {
+        "q": "Why does getting an API key need a credit card?",
+        "a": "HERE platform sign-up asks for a card before it issues an API key. [Product to confirm wording.] Not ready to add a card? Plan an evaluation with us."
+      },
+      {
+        "q": "Which AI coding tools does it work with?",
+        "a": "Any client that supports HTTP MCP servers, including Claude, Cursor, Windsurf and Copilot."
+      },
+      {
+        "q": "How is it different from HERE Location Reasoning?",
+        "a": "The documentation MCP helps your agent write HERE code. HERE Location Reasoning gives your agent live location tools while it runs: geocoding, routing, traffic and more."
+      }
+    ]
+  }
+}

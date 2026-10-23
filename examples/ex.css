@@ -1,0 +1,106 @@
+/* Page examples: shell, existing blocks (card grid, FAQ) and the component overlay.
+   The DX components themselves come from ../../src/. */
+@font-face{font-family:"FiraGO";font-weight:400;src:url(../fonts/firago-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"FiraGO";font-weight:500;src:url(../fonts/firago-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"FiraGO";font-weight:700;src:url(../fonts/firago-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Fira Code";font-weight:500;src:url(../fonts/fira-code-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Fira Code";font-weight:400;src:url(../fonts/fira-code-latin-500-normal.woff2) format("woff2")}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #ecf7fc; color: #092732; font: 400 16px/24px "FiraGO", "Fira Sans", system-ui, sans-serif; letter-spacing: -0.2px; -webkit-font-smoothing: antialiased; }
+[hidden] { display: none !important; }
+
+/* ---- Review toolbar (not part of the page) ---- */
+.exbar { position: sticky; top: 0; z-index: 50; background: #03141a; color: #bedfeb; border-bottom: 1px solid rgba(114,189,220,.2); }
+.exbar__in { max-width: 1440px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; font-size: 13px; line-height: 18px; }
+.exbar a { color: #ecf7fc; text-decoration: none; font-weight: 500; }
+.exbar a:hover { text-decoration: underline; }
+.exbar a[aria-current="page"] { color: #1ef3e4; }
+.exbar__tag { font: 500 11px/18px "Fira Code", monospace; letter-spacing: .5px; text-transform: uppercase; color: #1ef3e4; }
+.exbar__sp { flex: 1; }
+.exbar__btn { appearance: none; border: 0; cursor: pointer; height: 32px; padding: 0 14px; border-radius: 999px; font: 500 13px/1 "FiraGO", sans-serif; background: rgba(114,189,220,.14); color: #ecf7fc; }
+.exbar__btn[aria-pressed="true"] { background: #1ef3e4; color: #092732; }
+.exbar__btn:focus-visible { outline: 2px solid #a0b7f0; outline-offset: 2px; }
+
+/* ---- Page sections ---- */
+.crumbs { background: #051920; color: #89b9cb; font-size: 13px; }
+.crumbs__in { max-width: 1312px; margin: 0 auto; padding: 14px 64px 0; }
+.crumbs a { color: #bedfeb; text-decoration: none; }
+.sec { position: relative; }
+.sec--light { background: #ffffff; }
+.sec--canvas { background: #ecf7fc; }
+.sec__in { max-width: 1312px; margin: 0 auto; padding: 80px 64px; }
+.sec__eyebrow { margin: 0 0 10px; font: 500 12px/16px "Fira Code", monospace; letter-spacing: .5px; text-transform: uppercase; color: #007d75; }
+.sec__h { margin: 0; font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -1px; text-wrap: balance; }
+.sec__p { margin: 12px 0 0; font-size: 18px; line-height: 26.5px; color: #2c596a; max-width: 62ch; }
+.sec__head { margin-bottom: 36px; }
+
+/* Existing block: card grid */
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tcard { background: #ffffff; border: 1px solid rgba(0,129,177,.22); border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.sec--light .tcard { background: #f5fbfd; }
+.tcard code { align-self: flex-start; font: 500 13px/20px "Fira Code", monospace; color: #007d75; background: rgba(0,148,206,.08); padding: 1px 8px; border-radius: 2px; }
+.tcard p { margin: 0; font-size: 14px; line-height: 20px; letter-spacing: -0.4px; color: #2c596a; }
+.limits { margin: 20px 0 0; font-size: 13px; color: #3f7183; }
+.after-cards { margin-top: 40px; }
+
+/* Existing block: FAQ accordion */
+.faq { max-width: 880px; border-top: 1px solid rgba(0,129,177,.22); }
+.faq details { border-bottom: 1px solid rgba(0,129,177,.22); }
+.faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 16px; padding: 18px 4px; font-size: 18px; line-height: 24px; font-weight: 500; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; margin-left: auto; width: 10px; height: 10px; border-right: 2px solid #3f7183; border-bottom: 2px solid #3f7183; transform: rotate(45deg); transition: transform 150ms; flex: none; }
+.faq details[open] summary::after { transform: rotate(-135deg); }
+.faq summary:focus-visible { outline: 2px solid #1f28e8; outline-offset: 2px; }
+.faq p { margin: 0 0 18px; padding: 0 4px; color: #2c596a; max-width: 70ch; }
+.faq a { color: #1f28e8; }
+
+.pfoot { background: #051920; color: #89b9cb; font-size: 13px; }
+.pfoot__in { max-width: 1312px; margin: 0 auto; padding: 32px 64px; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.pfoot a { color: #bedfeb; text-decoration: none; }
+
+/* ---- Component overlay ("Show components") ---- */
+.show-components [data-comp] { outline: 2px dashed #f0157f; outline-offset: -8px; }
+.show-components [data-comp]::before {
+  content: attr(data-comp); position: absolute; z-index: 40; top: 14px; left: 14px;
+  font: 500 12px/1 "FiraGO", sans-serif; letter-spacing: 0; padding: 7px 10px; border-radius: 999px;
+  background: #f0157f; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.25); pointer-events: none;
+}
+.show-components [data-comp-kind="existing"] { outline-color: #3f7183; }
+.show-components [data-comp-kind="existing"]::before { background: #3f7183; }
+[data-comp] { position: relative; }
+
+/* ---- Build list (dev hand-off) ---- */
+.build { background: #03141a; color: #bedfeb; }
+.build__in { max-width: 1312px; margin: 0 auto; padding: 56px 64px 72px; }
+.build h2 { margin: 0 0 6px; color: #ecf7fc; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.6px; }
+.build > .build__in > p { margin: 0 0 20px; color: #89b9cb; max-width: 75ch; }
+.build__wrap { overflow-x: auto; }
+.build table { border-collapse: collapse; width: 100%; font-size: 13px; line-height: 19px; min-width: 760px; }
+.build th { text-align: left; font-weight: 500; color: #89b9cb; padding: 8px 10px; border-bottom: 1px solid rgba(114,189,220,.3); white-space: nowrap; }
+.build td { padding: 10px; border-bottom: 1px solid rgba(114,189,220,.14); vertical-align: top; }
+.build td code { color: #1ef3e4; font-family: "Fira Code", monospace; font-size: 12px; }
+.pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.pill--new { background: rgba(30,243,228,.16); color: #1ef3e4; }
+.pill--ex { background: rgba(190,223,235,.12); color: #bedfeb; }
+.build__row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+.build__btn { appearance: none; border: 0; cursor: pointer; height: 40px; padding: 0 18px; border-radius: 999px; background: #1ef3e4; color: #092732; font: 500 14px/1 "FiraGO", sans-serif; }
+.build__btn:focus-visible { outline: 2px solid #a0b7f0; outline-offset: 2px; }
+.build__note { font-size: 12px; color: #89b9cb; }
+.flag { display: inline-block; margin-left: 6px; font-size: 11px; color: #f5d94a; }
+
+@media (max-width: 1023px) {
+  .sec__in, .crumbs__in, .pfoot__in, .build__in { padding-left: 40px; padding-right: 40px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .sec__in, .crumbs__in, .pfoot__in, .build__in { padding-left: 20px; padding-right: 20px; }
+  .sec__in { padding-top: 56px; padding-bottom: 56px; }
+  .sec__h { font-size: 26px; line-height: 32px; }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  .exbar__sp { display: none; }
+}
+/* Labels for components nested inside a section sit top-right, outside the content */
+.show-components [data-cta-slot][data-comp] { outline-offset: 8px; }
+.show-components [data-cta-slot][data-comp]::before { top: -30px; left: auto; right: 0; }

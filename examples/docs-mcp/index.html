@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Docs MCP Page Example</title>
+<link rel="stylesheet" href="../../src/hero/dx-hero.css">
+<link rel="stylesheet" href="../../src/cta/dx-cta.css">
+<link rel="stylesheet" href="../../src/banner/dx-banner.css">
+<link rel="stylesheet" href="../ex.css">
+</head>
+<body>
+<div class="exbar"><div class="exbar__in">
+  <a href="../../index.html">← All DX components</a>
+  <span class="exbar__tag">Page examples</span>
+  <a href="../docs-mcp/index.html" aria-current="page">HERE Docs MCP</a>
+  <a href="../hlr-mcp/index.html">HERE Location Reasoning</a>
+  <span class="exbar__sp"></span>
+  <button type="button" class="exbar__btn" id="toggleComps" aria-pressed="false">Show components</button>
+  <a href="#build">Build list ↓</a>
+</div></div>
+<div class="crumbs"><div class="crumbs__in"><a href="#">Developers</a> / HERE Docs MCP <span style="opacity:.7">· mock of /developer/here-docs-mcp</span></div></div>
+<main id="page"></main>
+<section class="build" id="build"><div class="build__in">
+  <h2>Build list</h2>
+  <p>Every section on this page, the component it uses and the Contentful entry behind it. Draft copy from the page brief; items flagged in yellow need Product.</p>
+  <div class="build__wrap"><table><thead><tr><th>#</th><th>Section</th><th>Component</th><th>Variant</th><th>Contentful</th><th>Status</th></tr></thead><tbody id="buildRows"></tbody></table></div>
+  <div class="build__row"><button type="button" class="build__btn" id="copyEntries">Copy page entries (JSON)</button><span class="build__note">One JSON file with every entry on the page, ready for the Contentful build ticket.</span></div>
+</div></section>
+<footer class="pfoot"><div class="pfoot__in"><span>Page example · developed under the DX Strategy · internal use only</span><a href="../../hero/index.html">DX Hero</a><a href="../../cta/index.html">DX CTA</a><a href="../../banner/index.html">DX Banner</a></div></footer>
+<script src="../../src/hero/dx-hero.js"></script>
+<script src="../../src/cta/dx-cta.js"></script>
+<script src="../../src/banner/dx-banner.js"></script>
+<script src="../ex.js"></script>
+<script>
+(function () {
+  var hero = DXHero.sample('snippet');
+  hero.snippet.caption = 'Illustration. Final image: capture from the Claude walkthrough.';
+  var setup = DXHero.sample('tabs');
+  var cta = DXCta.sample();
+  cta.copyPrompt.label = 'Try this prompt';
+  cta.copyPrompt.prompt = 'Using the HERE documentation MCP server, tell me how to get an API key for the HERE Matrix Routing API.';
+  cta.copyPrompt.secondary = { label: 'Then run the code with a free API key', href: '#run', style: 'link' };
+  cta.copyPrompt.helper = ['Works in Claude, Cursor, Windsurf and Copilot'];
+  var band = DXBanner.sample();
+  band.button.body = 'Create a HERE platform account to get your key. The MCP is free; the code it helps write runs on your API key.';
+  band.button.trust = ['Credit card required at sign-up', 'Free allowance: Product to confirm'];
+  band.button.secondary = { label: 'Not ready to add a card? Plan an evaluation with us', href: 'https://www.here.com/contact' };
+  DXExample.build({ url: '/developer/here-docs-mcp', sections: [
+    { type: 'hero', name: '1 Hero', cfg: { media: 'snippet', theme: 'dark', layout: 'horizontal', content: hero, show: { caption: true } } },
+    { type: 'hero', name: '2 Set it up', note: 'Claude Code, Cursor and Kiro configs: Product to verify', cfg: { media: 'tabs', theme: 'light', layout: 'horizontal', headingLevel: 2, content: setup, show: { primaryCta: false } } },
+    { type: 'cards', name: '3 What your agent can do', ground: 'light', eyebrow: 'Six tools', heading: 'What your agent can do', sub: 'The HERE documentation MCP gives your agent six tools for current HERE documentation. Tool names are verbatim.',
+      cards: [['list-endpoints', 'Lists API paths, methods and summaries.'], ['get-endpoint', 'Returns full detail for one endpoint.'], ['search-specs', 'Searches paths, operations and schemas.'], ['list-specs', 'Lists every API spec it can reach.'], ['search', 'Full-text search across the docs; returns page IDs.'], ['fetch', 'Returns a full docs page by ID.']],
+      limits: 'Public docs only · no API calls · can’t create API keys', existingLabel: 'Existing · card grid', existingEntry: 'cardGrid', note: 'search-specs vs search-endpoints: Product to confirm',
+      cta: { composition: 'single', action: 'copyPrompt', theme: 'light', content: cta, show: { secondary: true } }, ctaName: '3b Try this prompt' },
+    { type: 'banner', name: '4 Run the code', note: 'Free allowance fact: Product', cfg: { action: 'button', theme: 'dark', layout: 'split', content: band } },
+    { type: 'faq', name: '5 FAQ', ground: 'canvas', heading: 'Questions developers ask', existingLabel: 'Existing · FAQ accordion', existingEntry: 'faqAccordion', note: 'FAQPage schema to confirm', items: [
+      ['What is the HERE documentation MCP?', 'A documentation-focused MCP server that gives AI coding agents direct access to official HERE developer docs: guides, API references, data specs and changelogs. It is free and needs no HERE account.'],
+      ['Does it call HERE APIs or use my API key?', 'No. It reads public documentation only. It does not run HERE API requests, read credentials or create API keys. The code your agent writes needs a HERE API key to run.'],
+      ['Do I need a HERE account to use the MCP?', 'No. The server at https://docs.here.com/mcp needs no authentication. You need a HERE platform account only when you run the code your agent writes.'],
+      ['Why does getting an API key need a credit card?', 'HERE platform sign-up asks for a card before it issues an API key. [Product to confirm wording.] Not ready to add a card? <a href="https://www.here.com/contact">Plan an evaluation with us</a>.'],
+      ['Which AI coding tools does it work with?', 'Any client that supports HTTP MCP servers, including Claude, Cursor, Windsurf and Copilot.'],
+      ['How is it different from HERE Location Reasoning?', 'The documentation MCP helps your agent write HERE code. HERE Location Reasoning gives your agent live location tools while it runs: geocoding, routing, traffic and more. <a href="../hlr-mcp/index.html">See the HLR example</a>.']] }
+  ] });
+})();
+</script>
+</body>
+</html>
