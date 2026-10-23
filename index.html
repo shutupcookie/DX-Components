@@ -10,31 +10,95 @@
 @font-face{font-family:"FiraGO";font-weight:500;src:url(fonts/firago-latin-500-normal.woff2) format("woff2")}
 @font-face{font-family:"FiraGO";font-weight:700;src:url(fonts/firago-latin-700-normal.woff2) format("woff2")}
 @font-face{font-family:"Fira Code";font-weight:500;src:url(fonts/fira-code-latin-500-normal.woff2) format("woff2")}
-/* HDS brand-developer tokens. Layout: intro, then one card per component family. */
-:root{--bg:#f4f9fb;--panel:#fff;--fg:#092732;--fg2:#2c596a;--fg3:#3f7183;--line:rgba(0,129,177,.16);--accent:#007d75;--action:#1f28e8;--chip:#ecf7fc;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#03141a;--panel:#071f28;--fg:#ecf7fc;--fg2:#bedfeb;--fg3:#89b9cb;--line:rgba(114,189,220,.16);--accent:#1ef3e4;--action:#a0b7f0;--chip:#051920;color-scheme:dark}}
+/* HDS brand-developer tokens. Three zones, each with its own container:
+   reviews (dark, the call to action), components (white panel), examples (tinted). */
+:root{--bg:#f4f9fb;--panel:#fff;--tint:#e4f2f7;--fg:#092732;--fg2:#2c596a;--fg3:#3f7183;--line:rgba(0,129,177,.16);--accent:#007d75;--action:#1f28e8;--chip:#ecf7fc;
+  --dk:#051920;--dk2:#092732;--dkfg:#ecf7fc;--dkfg2:#bedfeb;--dkfg3:#89b9cb;--dkline:rgba(114,189,220,.2);--aqua:#1ef3e4;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#03141a;--panel:#071f28;--tint:#06222c;--fg:#ecf7fc;--fg2:#bedfeb;--fg3:#89b9cb;--line:rgba(114,189,220,.16);--accent:#1ef3e4;--action:#a0b7f0;--chip:#051920;--dk:#020c10;--dk2:#071f28;color-scheme:dark}}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font:400 16px/24px "FiraGO","Fira Sans",system-ui,sans-serif;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1200px;margin:0 auto;padding:56px max(20px,env(safe-area-inset-right,0px)) 64px max(20px,env(safe-area-inset-left,0px))}
+.wrap{max-width:1200px;margin:0 auto;padding:56px max(20px,env(safe-area-inset-right,0px)) 72px max(20px,env(safe-area-inset-left,0px))}
 .eyebrow{margin:0 0 8px;font:500 12px/16px "Fira Code",monospace;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
 h1{margin:0;font-size:40px;line-height:48px;font-weight:700;letter-spacing:-1px}
 .lede{margin:12px 0 0;text-wrap:pretty;color:var(--fg2);font-size:18px;line-height:26.5px;max-width:62ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px;margin-top:40px}
-.card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;color:inherit;text-decoration:none;transition:border-color 150ms}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none}
+.jump a{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);color:var(--fg);text-decoration:none;font-size:14px;font-weight:500}
+.jump a:hover{box-shadow:inset 0 0 0 1px var(--accent)}
+.jump a:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.jump b{font:500 11px/1 "Fira Code",monospace;color:var(--accent)}
+
+.zone{margin-top:40px;border-radius:16px;padding:32px}
+.zone__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px;margin-bottom:24px}
+.zone__num{font:500 12px/16px "Fira Code",monospace;letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.zone h2{margin:0;font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.6px}
+.zone__p{margin:6px 0 0;color:var(--fg2);max-width:62ch;text-wrap:pretty}
+.zone__aside{margin:0;font-size:13px;color:var(--fg3)}
+
+/* Zone 1: reviews */
+.zone--rev{background:radial-gradient(120% 140% at 100% 0%,rgba(30,243,228,.12),transparent 55%),var(--dk);color:var(--dkfg);box-shadow:0 0 0 1px var(--dkline)}
+.zone--rev .zone__num{color:var(--aqua)}
+.zone--rev .zone__p,.zone--rev .zone__aside{color:var(--dkfg2)}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:20px}
+.rcard{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);background:var(--dk2);border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--dkline);color:inherit;text-decoration:none;transition:box-shadow 150ms,transform 150ms}
+.rcard:hover{box-shadow:inset 0 0 0 1px rgba(30,243,228,.55)}
+.rcard:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
+.rcard img{display:block;width:100%;height:100%;min-height:220px;object-fit:cover;object-position:top left}
+.rcard__b{padding:20px 22px 22px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rcard h3{margin:4px 0 0;font-size:20px;line-height:26px;font-weight:500}
+.rcard p{margin:0;font-size:14px;line-height:20px;color:var(--dkfg2)}
+.rcard__meta{font-size:13px;color:var(--dkfg3)}
+.rcard__meta b{color:var(--dkfg);font-weight:500}
+.rcard__go{margin-top:auto;padding-top:8px;display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:14px;color:var(--aqua)}
+.rcard__go svg{width:16px;height:16px;transition:transform 150ms}
+.rcard:hover .rcard__go svg{transform:translateX(3px)}
+.st{--c:#1ef3e4;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px 0 10px;border-radius:999px;font-size:13px;font-weight:500;color:var(--dkfg);background:color-mix(in srgb,var(--c) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent)}
+.st i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.st[data-s="open"] i{animation:pulse 2s infinite}
+.st[data-s="closed"]{--c:#f5c542}.st[data-s="approved"]{--c:#a0b7f0}.st[data-s="published"]{--c:#6fe39b}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(30,243,228,.7)}70%{box-shadow:0 0 0 7px rgba(30,243,228,0)}100%{box-shadow:0 0 0 0 rgba(30,243,228,0)}}
+@media (prefers-reduced-motion:reduce){.st i{animation:none!important}}
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0 0;padding:0;list-style:none;counter-reset:s}
+.how li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:19px;color:var(--dkfg2)}
+.how b{color:var(--dkfg);font-weight:500}
+.how li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:500 11px/1 "Fira Code",monospace;color:var(--aqua);box-shadow:inset 0 0 0 1px var(--dkline)}
+
+/* Zone 2: components */
+.zone--comp{background:var(--panel);box-shadow:0 0 0 1px var(--line),0 12px 32px -24px rgba(9,39,50,.35)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+.card{display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none;transition:border-color 150ms}
 a.card:hover{border-color:var(--accent)}
 a.card:focus-visible{outline:2px solid var(--action);outline-offset:2px}
 .card img{display:block;width:100%;aspect-ratio:16/8;object-fit:cover;object-position:top left;border-bottom:1px solid var(--line)}
-.ph{aspect-ratio:16/8;display:grid;place-items:center;background:var(--chip);color:var(--fg3);font:500 13px/1 "Fira Code",monospace;border-bottom:1px solid var(--line)}
-.body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:6px}
-.body h2{margin:0;font-size:20px;line-height:24px;font-weight:500}
+.body{padding:16px 18px 20px;display:flex;flex-direction:column;gap:6px}
+.body h3{margin:0;font-size:20px;line-height:24px;font-weight:500}
 .body p{margin:0;color:var(--fg2);font-size:14px;line-height:20px}
-.tag{align-self:flex-start;margin-top:8px;font:500 12px/20px "FiraGO",sans-serif;padding:0 10px;border-radius:999px;background:var(--chip);color:var(--accent);box-shadow:inset 0 0 0 1px var(--line)}
-.muted{opacity:.75}
-.exh{margin:56px 0 0;font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.6px}
-.exp{margin:8px 0 0;color:var(--fg2);max-width:70ch}
-.grid2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));margin-top:24px}
-@media (max-width:600px){h1{font-size:30px;line-height:36px}}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font:500 12px/22px "FiraGO",sans-serif;padding:0 10px;border-radius:999px;background:var(--chip);color:var(--fg2);box-shadow:inset 0 0 0 1px var(--line)}
+.tag--ok{color:var(--accent)}
+.tag--wip{color:#8a6400;background:#fdf5d2;box-shadow:none}
+@media (prefers-color-scheme:dark){.tag--wip{color:#f5c542;background:rgba(245,197,66,.12)}}
+
+/* Zone 3: examples */
+.zone--ex{background:var(--tint)}
+.xgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.xcard{display:grid;grid-template-columns:160px minmax(0,1fr);align-items:stretch;background:var(--panel);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow 150ms}
+.xcard:hover{box-shadow:inset 0 0 0 1px var(--accent)}
+.xcard:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.xcard img{display:block;width:100%;height:100%;object-fit:cover;object-position:top left}
+.xcard .body{padding:14px 16px 16px}
+.xcard h3{font-size:17px;line-height:22px}
+.xcard code{font:500 12px/18px "Fira Code",monospace;color:var(--fg3);overflow-wrap:anywhere}
+.foot{margin:40px 0 0;font-size:13px;color:var(--fg3)}
+
+@media (max-width:760px){
+  h1{font-size:30px;line-height:36px}
+  .zone{padding:22px 16px;border-radius:12px;margin-left:-4px;margin-right:-4px}
+  .rcard{grid-template-columns:1fr}
+  .rcard img{min-height:0;aspect-ratio:16/8;height:auto}
+  .how{grid-template-columns:1fr}
+  .xcard{grid-template-columns:110px minmax(0,1fr)}
+}
 </style>
 </head>
 <body>
@@ -42,23 +106,83 @@ a.card:focus-visible{outline:2px solid var(--action);outline-offset:2px}
   <p class="eyebrow">HERE Developer Experience · 2026–27</p>
   <h1>DX components</h1>
   <p class="lede">Reusable page components developed under the DX Strategy. For internal use only.</p>
-  <div class="grid">
-    <a class="card" href="hero/index.html"><img src="assets/hero.jpg" alt="DX Hero, code snippet tabs, horizontal, dark"><div class="body"><h2>DX Hero</h2><p>Code snippet or code snippet tabs, dark or light, horizontal or vertical. 8 variants.</p><span class="tag">Wave 1 · ready for build</span></div></a>
-    <a class="card" href="cta/index.html"><img src="assets/cta.jpg" alt="DX CTA, pair, copy URL, dark"><div class="body"><h2>DX CTA</h2><p>Single, pair, list or card with copy URL, copy code, copy prompt or download. 8 variants.</p><span class="tag">Wave 1 · ready for build</span></div></a>
-    <a class="card" href="banner/index.html"><img src="assets/banner.jpg" alt="DX Banner, button, split, dark"><div class="body"><h2>DX Banner</h2><p>Full-width band with a button, copy URL, copy code or download. Split or stacked. 8 variants.</p><span class="tag">Wave 1 · in review</span></div></a>
-  </div>
-  <h2 class="exh">Page examples</h2>
-  <p class="exp">Full pages built from the components, with a switch that labels each section and a build list for developers.</p>
-  <div class="grid grid2">
-    <a class="card" href="examples/docs-mcp/index.html"><img src="assets/ex-docs.jpg" alt="HERE Docs MCP page example"><div class="body"><h2>HERE Docs MCP</h2><p>/developer/here-docs-mcp: hero, set it up, six tools with a copy prompt, run the code, FAQ.</p><span class="tag">Example · draft copy</span></div></a>
-    <a class="card" href="examples/hlr-mcp/index.html"><img src="assets/ex-hlr.jpg" alt="HERE Location Reasoning page example"><div class="body"><h2>HERE Location Reasoning</h2><p>/developer/location-reasoning-mcp: hero, connect, tools, subscribe on AWS, connection details, FAQ.</p><span class="tag">Example · draft copy</span></div></a>
-  </div>
-  <h2 class="exh">Page reviews</h2>
-  <p class="exp">Leave comments on a page for the team. Type your name once; comments are shared with everyone who has the site password.</p>
-  <div class="grid grid2">
-    <a class="card" href="review/docs-mcp/index.html"><img src="assets/ex-docs.jpg" alt="HERE Docs MCP page review"><div class="body"><h2>HERE Docs MCP · review</h2><p>Comment on any section, tool card or FAQ question. Editors can update the copy and save versions.</p><span class="tag">Open for comments</span></div></a>
-    <a class="card" href="review/hlr-mcp/index.html"><img src="assets/ex-hlr.jpg" alt="HERE Location Reasoning page review"><div class="body"><h2>HERE Location Reasoning · review</h2><p>Comment on any section, tool card, connection detail or FAQ question. Editors can update the copy and save versions.</p><span class="tag">Open for comments</span></div></a>
-  </div>
+  <ul class="jump" aria-label="On this page">
+    <li><a href="#reviews"><b>01</b>Page reviews</a></li>
+    <li><a href="#components"><b>02</b>Components</a></li>
+    <li><a href="#examples"><b>03</b>Page examples</a></li>
+  </ul>
+
+  <section class="zone zone--rev" id="reviews" aria-labelledby="h-rev">
+    <div class="zone__head">
+      <div><p class="zone__num">01 · Your input</p><h2 id="h-rev">Page reviews</h2>
+        <p class="zone__p">Pages waiting for feedback. Open one and comment right on the section you mean.</p></div>
+    </div>
+    <div class="rgrid">
+      <a class="rcard" href="review/docs-mcp/index.html" data-page="docs-mcp"><img src="assets/ex-docs.jpg" alt="">
+        <div class="rcard__b"><span class="st" data-s="open"><i aria-hidden="true"></i><span>Open for comments</span></span>
+          <h3>HERE Docs MCP</h3><p>/developer/here-docs-mcp · hero, setup, tools, run the code, FAQ.</p>
+          <span class="rcard__meta"></span>
+          <span class="rcard__go">Open review <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></a>
+      <a class="rcard" href="review/hlr-mcp/index.html" data-page="hlr-mcp"><img src="assets/ex-hlr.jpg" alt="">
+        <div class="rcard__b"><span class="st" data-s="open"><i aria-hidden="true"></i><span>Open for comments</span></span>
+          <h3>HERE Location Reasoning</h3><p>/developer/location-reasoning-mcp · hero, connect, tools, subscribe, connection details, FAQ.</p>
+          <span class="rcard__meta"></span>
+          <span class="rcard__go">Open review <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></a>
+    </div>
+    <ol class="how">
+      <li><span>Click <b>Comment</b> on any section, tool card or FAQ question.</span></li>
+      <li><span>Type your name the first time. No account needed.</span></li>
+      <li><span>Everyone with the site password sees comments. Reply or resolve in the thread.</span></li>
+    </ol>
+  </section>
+
+  <section class="zone zone--comp" id="components" aria-labelledby="h-comp">
+    <div class="zone__head">
+      <div><p class="zone__num">02 · Building blocks</p><h2 id="h-comp">Components</h2>
+        <p class="zone__p">Explore every variant, try the copy, and grab tokens and dev specs.</p></div>
+      <p class="zone__aside">3 components · 24 variants</p>
+    </div>
+    <div class="grid">
+      <a class="card" href="hero/index.html"><img src="assets/hero.jpg" alt="DX Hero, code snippet tabs, horizontal, dark"><div class="body"><h3>DX Hero</h3><p>Code snippet or code snippet tabs, dark or light, horizontal or vertical.</p><div class="tags"><span class="tag">8 variants</span><span class="tag tag--ok">Wave 1 · ready for build</span></div></div></a>
+      <a class="card" href="cta/index.html"><img src="assets/cta.jpg" alt="DX CTA, pair, copy URL, dark"><div class="body"><h3>DX CTA</h3><p>Single, pair, list or card with copy URL, copy code, copy prompt or download.</p><div class="tags"><span class="tag">8 variants</span><span class="tag tag--ok">Wave 1 · ready for build</span></div></div></a>
+      <a class="card" href="banner/index.html"><img src="assets/banner.jpg" alt="DX Banner, button, split, dark"><div class="body"><h3>DX Banner</h3><p>Full-width band with a button, copy URL, copy code or download. Split or stacked.</p><div class="tags"><span class="tag">8 variants</span><span class="tag tag--wip">Wave 1 · in review</span></div></div></a>
+    </div>
+  </section>
+
+  <section class="zone zone--ex" id="examples" aria-labelledby="h-ex">
+    <div class="zone__head">
+      <div><p class="zone__num">03 · For developers</p><h2 id="h-ex">Page examples</h2>
+        <p class="zone__p">Full pages built from the components, with a switch that labels each section and a build list for the Contentful ticket.</p></div>
+    </div>
+    <div class="xgrid">
+      <a class="xcard" href="examples/docs-mcp/index.html"><img src="assets/ex-docs.jpg" alt=""><div class="body"><h3>HERE Docs MCP</h3><code>/developer/here-docs-mcp</code><div class="tags"><span class="tag">Example · draft copy</span></div></div></a>
+      <a class="xcard" href="examples/hlr-mcp/index.html"><img src="assets/ex-hlr.jpg" alt=""><div class="body"><h3>HERE Location Reasoning</h3><code>/developer/location-reasoning-mcp</code><div class="tags"><span class="tag">Example · draft copy</span></div></div></a>
+    </div>
+  </section>
+  <p class="foot">Internal use only · not indexed by search or answer engines.</p>
 </main>
+<script>
+/* Live review status and comment counts from /api/status. The page works without it. */
+(function () {
+  var LABEL = { open: 'Open for comments', closed: 'Comments closed', approved: 'Approved', published: 'Published' };
+  function ago(iso) {
+    var s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 3600) return Math.max(1, Math.floor(s / 60)) + ' min ago'; if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+    var d = Math.floor(s / 86400); return d === 1 ? 'yesterday' : d + ' days ago';
+  }
+  fetch('api/status', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    if (!j || !j.pages) return;
+    j.pages.forEach(function (p) {
+      var card = document.querySelector('.rcard[data-page="' + p.page + '"]'); if (!card) return;
+      var st = card.querySelector('.st'); st.setAttribute('data-s', p.status); st.querySelector('span').textContent = LABEL[p.status] || LABEL.open;
+      var meta = card.querySelector('.rcard__meta'), n = p.open_comments || 0, bits = [];
+      if (p.status === 'open') bits.push(n ? '<b>' + n + '</b> open comment' + (n > 1 ? 's' : '') : 'No comments yet. Be the first.');
+      if (p.last_activity) bits.push('last comment ' + ago(p.last_activity));
+      meta.innerHTML = bits.join(' · ');
+      if (p.status !== 'open') card.querySelector('.rcard__go').firstChild.textContent = 'View page ';
+    });
+  }).catch(function () {});
+})();
+</script>
 </body>
 </html>

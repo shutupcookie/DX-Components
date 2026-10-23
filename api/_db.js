@@ -2,9 +2,10 @@
 // Uses Neon Postgres via DATABASE_URL (set when the Neon store is connected to the project).
 // DX_REVIEW_DB=memory switches to an in-memory store for local testing.
 import { neon } from '@neondatabase/serverless';
+import { timingSafeEqual } from 'node:crypto';
 
 let ready = null;
-const mem = { comments: [], versions: [], id: 0 };
+const mem = { comments: [], versions: [], status: {}, id: 0 };
 
 function memoryStore() {
   return {
@@ -13,7 +14,16 @@ function memoryStore() {
     async setResolved(id, resolved, page) { const r = mem.comments.find(c => c.id === id && c.page === page); if (!r) return null; r.resolved = resolved; return r; },
     async latestContent(page) { const v = mem.versions.filter(x => x.page === page); return v.length ? v[v.length - 1] : null; },
     async listVersions(page) { return mem.versions.filter(x => x.page === page).map(({ content, ...rest }) => rest).reverse(); },
-    async addVersion(v) { const row = { id: ++mem.id, created_at: new Date().toISOString(), ...v }; mem.versions.push(row); return row; }
+    async addVersion(v) { const row = { id: ++mem.id, created_at: new Date().toISOString(), ...v }; mem.versions.push(row); return row; },
+    async getStatus(page) { return mem.status[page] || null; },
+    async setStatus(page, status, live_url, author) { mem.status[page] = { page, status, live_url, author, updated_at: new Date().toISOString() }; return mem.status[page]; },
+    async summary() {
+      return [...PAGES].map(page => {
+        const cs = mem.comments.filter(c => c.page === page);
+        return { page, ...(mem.status[page] || {}), open_comments: cs.filter(c => !c.parent_id && !c.resolved).length,
+          last_activity: cs.length ? cs[cs.length - 1].created_at : null };
+      });
+    }
   };
 }
 
@@ -32,6 +42,9 @@ function neonStore() {
         id BIGSERIAL PRIMARY KEY, page TEXT NOT NULL, content JSONB NOT NULL, note TEXT NOT NULL, author TEXT NOT NULL,
         created_at TIMESTAMPTZ NOT NULL DEFAULT now())`;
       await sql`CREATE INDEX IF NOT EXISTS review_versions_page ON review_versions(page, id DESC)`;
+      await sql`CREATE TABLE IF NOT EXISTS review_pages (
+        page TEXT PRIMARY KEY, status TEXT NOT NULL, live_url TEXT NOT NULL DEFAULT '', author TEXT NOT NULL DEFAULT '',
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now())`;
     })().catch(e => { ready = null; throw e; });
     return ready;
   }
@@ -41,7 +54,23 @@ function neonStore() {
     async setResolved(id, resolved, page) { await init(); const r = await sql`UPDATE review_comments SET resolved = ${resolved} WHERE id = ${id} AND page = ${page} RETURNING *`; return r[0] || null; },
     async latestContent(page) { await init(); const r = await sql`SELECT id, content, note, author, created_at FROM review_versions WHERE page = ${page} ORDER BY id DESC LIMIT 1`; return r[0] || null; },
     async listVersions(page) { await init(); return sql`SELECT id, note, author, created_at FROM review_versions WHERE page = ${page} ORDER BY id DESC LIMIT 100`; },
-    async addVersion(v) { await init(); const r = await sql`INSERT INTO review_versions (page, content, note, author) VALUES (${v.page}, ${JSON.stringify(v.content)}::jsonb, ${v.note}, ${v.author}) RETURNING id, note, author, created_at`; return r[0]; }
+    async addVersion(v) { await init(); const r = await sql`INSERT INTO review_versions (page, content, note, author) VALUES (${v.page}, ${JSON.stringify(v.content)}::jsonb, ${v.note}, ${v.author}) RETURNING id, note, author, created_at`; return r[0]; },
+    async getStatus(page) { await init(); const r = await sql`SELECT page, status, live_url, author, updated_at FROM review_pages WHERE page = ${page}`; return r[0] || null; },
+    async setStatus(page, status, live_url, author) {
+      await init();
+      const r = await sql`INSERT INTO review_pages (page, status, live_url, author, updated_at) VALUES (${page}, ${status}, ${live_url}, ${author}, now())
+        ON CONFLICT (page) DO UPDATE SET status = EXCLUDED.status, live_url = EXCLUDED.live_url, author = EXCLUDED.author, updated_at = now() RETURNING *`;
+      return r[0];
+    },
+    async summary() {
+      await init();
+      const pages = [...PAGES];
+      const [st, cm] = await Promise.all([
+        sql`SELECT page, status, live_url, author, updated_at FROM review_pages WHERE page = ANY(${pages})`,
+        sql`SELECT page, COUNT(*) FILTER (WHERE parent_id IS NULL AND NOT resolved)::int AS open_comments, MAX(created_at) AS last_activity FROM review_comments WHERE page = ANY(${pages}) GROUP BY page`
+      ]);
+      return pages.map(page => ({ page, ...(st.find(x => x.page === page) || {}), ...(cm.find(x => x.page === page) || { open_comments: 0, last_activity: null }) }));
+    }
   };
 }
 
@@ -50,6 +79,9 @@ export function db() { if (!store) store = process.env.DX_REVIEW_DB === 'memory'
 
 // Pages this review API accepts. Add a slug here when a new page gets a review view.
 export const PAGES = new Set(['docs-mcp', 'hlr-mcp']);
+
+// Review statuses. Only 'open' accepts new comments and replies.
+export const STATUSES = ['open', 'closed', 'approved', 'published'];
 
 export function clean(s, max) { return String(s == null ? '' : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, max); }
 
@@ -72,4 +104,12 @@ export function fail(res, e) {
   const status = e && e.status || 500;
   if (status >= 500) console.error('[review-api]', e);
   send(res, status, { error: status >= 500 && status !== 503 ? 'Server error. Try again in a moment.' : e.message });
+}
+
+// Editor passcode (EDITOR_PASSCODE). Returns null when no passcode is set, else true/false.
+export function passOk(given) {
+  const want = process.env.EDITOR_PASSCODE || '';
+  if (!want) return null;
+  const a = Buffer.from(String(given || '')), b = Buffer.from(want);
+  return a.length === b.length && timingSafeEqual(a, b);
 }

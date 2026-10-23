@@ -11,6 +11,13 @@
   var C = null, saved = '', versions = [], comments = [], online = false, editingOn = false;
   var app = document.getElementById('app');
   var state = { target: null, filter: 'open' };
+  var pst = { status: 'open', live_url: '' };
+  var ST = {
+    open: { label: 'Open for comments', text: 'Reviewers can comment and reply.' },
+    closed: { label: 'Comments closed', text: 'The team is making changes. Comments are read-only.' },
+    approved: { label: 'Approved', text: 'Signed off and ready to build.' },
+    published: { label: 'Published', text: 'Live on here.com.' }
+  };
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function $(s, r) { return (r || document).querySelector(s); }
@@ -57,7 +64,7 @@
       btn.type = 'button'; btn.className = kind === 'section' ? 'rv-cbtn' : 'rv-tbtn';
       if (n) btn.classList.add('has');
       btn.setAttribute('aria-label', (n ? n + ' open comment' + (n > 1 ? 's' : '') + ' on ' : 'Comment on ') + label);
-      btn.innerHTML = ICON_C + (kind === 'section' ? '<span class="t">Comment</span>' : '') + (n ? '<span class="n">' + n + '</span>' : '');
+      btn.innerHTML = ICON_C + (kind === 'section' ? '<span class="t">' + (pst.status === 'open' ? 'Comment' : 'Comments') + '</span>' : '') + (n ? '<span class="n">' + n + '</span>' : '');
       btn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); openPanel(target, label); });
       var host = el.tagName === 'DETAILS' ? el.querySelector('summary') : el;
       if (el.tagName !== 'DETAILS' && getComputedStyle(el).position === 'static') el.style.position = 'relative';
@@ -79,7 +86,8 @@
     var el = document.createElement('div');
     el.className = 'rv-bar';
     el.innerHTML = '<div class="rv-bar__in"><a class="rv-home" href="../../index.html" aria-label="All DX components">←</a><div class="rv-title"><b>' + esc(C.meta.title) + ' · page review</b><span id="rvStatus"></span></div>' +
-      '<div class="rv-btns"><button type="button" class="rv-btn" id="rvHow" aria-expanded="false">How it works</button>' +
+      '<div class="rv-btns"><button type="button" class="rv-st" id="rvSt" aria-expanded="false" data-s="open"><i aria-hidden="true"></i><span>Open for comments</span></button>' +
+      '<button type="button" class="rv-btn" id="rvHow" aria-expanded="false">How it works</button>' +
       '<button type="button" class="rv-btn" id="rvLog" aria-expanded="false">Versions</button>' +
       '<button type="button" class="rv-btn" id="rvComps" aria-pressed="false">Show components</button>' +
       '<button type="button" class="rv-btn" id="rvComments">Comments</button>' +
@@ -90,6 +98,7 @@
       '<li>Everyone with the site password sees the comments. Reply in a thread, and resolve it once it’s handled.</li>' +
       '<li><b>Edit copy</b> changes the text on the page. Saving needs the editor passcode and is listed under Versions.</li></ol></div>' +
       '<div class="rv-pop" id="rvLogPop" hidden><h3>Versions</h3><ul id="rvLogList"></ul></div>' +
+      '<div class="rv-pop" id="rvStPop" hidden></div>' +
       '<div class="rv-off" id="rvOff" hidden></div>';
     document.body.insertBefore(el, app);
     function barH() { document.documentElement.style.setProperty('--rv-bar-h', Math.round(el.getBoundingClientRect().bottom) + 'px'); }
@@ -97,12 +106,15 @@
     function pop(btn, p) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
-        var open = p.hidden; $$('.rv-pop').forEach(function (x) { x.hidden = true; }); $$('#rvHow,#rvLog').forEach(function (x) { x.setAttribute('aria-expanded', 'false'); });
+        var open = p.hidden; $$('.rv-pop').forEach(function (x) { x.hidden = true; }); $$('#rvHow,#rvLog,#rvSt').forEach(function (x) { x.setAttribute('aria-expanded', 'false'); });
         p.hidden = !open; btn.setAttribute('aria-expanded', String(open));
         if (p.id === 'rvLogPop') renderVersions();
+        if (p.id === 'rvStPop') renderStatusPop();
       });
     }
-    pop($('#rvHow'), $('#rvHowPop')); pop($('#rvLog'), $('#rvLogPop'));
+    pop($('#rvHow'), $('#rvHowPop')); pop($('#rvLog'), $('#rvLogPop')); pop($('#rvSt'), $('#rvStPop'));
+    $('#rvStPop').addEventListener('change', function (e) { if (e.target.name === 'st') $('#rvLiveF').hidden = e.target.value !== 'published'; });
+    $('#rvStPop').addEventListener('submit', saveStatus);
     document.addEventListener('click', function (e) { if (!e.target.closest('.rv-pop')) { $$('.rv-pop').forEach(function (x) { x.hidden = true; }); } });
     $('#rvComps').addEventListener('click', function () { var on = !document.body.classList.contains('show-components'); document.body.classList.toggle('show-components', on); this.setAttribute('aria-pressed', String(on)); });
     $('#rvComments').addEventListener('click', function () { openPanel(null); });
@@ -111,6 +123,36 @@
   function setStatus() {
     var v = versions[0];
     $('#rvStatus').textContent = 'Mock of ' + C.meta.url + (v ? ' · version ' + versions.length + ', ' + when(v.created_at) + ' by ' + v.author + ': ' + v.note : ' · draft copy from the page brief');
+  }
+  function showStatus() {
+    var b = $('#rvSt'), m = ST[pst.status] || ST.open;
+    b.setAttribute('data-s', pst.status); $('span', b).textContent = m.label;
+    document.body.classList.toggle('rv-closed', pst.status !== 'open');
+    $$('.rv-cbtn .t', app).forEach(function (t) { t.textContent = pst.status === 'open' ? 'Comment' : 'Comments'; });
+  }
+  function renderStatusPop() {
+    var m = ST[pst.status] || ST.open, p = $('#rvStPop');
+    var h = '<h3>' + esc(m.label) + '</h3><p class="rv-st__p">' + esc(m.text) +
+      (pst.status === 'published' && pst.live_url ? ' <a href="' + esc(pst.live_url) + '" target="_blank" rel="noopener">See the live page</a>' : '') + '</p>' +
+      (pst.updated_at && pst.author ? '<p class="rv-st__meta">Set by ' + esc(pst.author) + ', ' + esc(when(pst.updated_at)) + '</p>' : '');
+    if (online && editingOn) {
+      h += '<form class="rv-st__f"><fieldset><legend>Change status (editors)</legend>' + Object.keys(ST).map(function (k) {
+        return '<label class="rv-st__o"><input type="radio" name="st" value="' + k + '"' + (k === pst.status ? ' checked' : '') + '><span class="rv-st" data-s="' + k + '"><i aria-hidden="true"></i><span>' + esc(ST[k].label) + '</span></span><small>' + esc(ST[k].text) + '</small></label>';
+      }).join('') + '</fieldset>' +
+        '<div class="rv-f" id="rvLiveF"' + (pst.status === 'published' ? '' : ' hidden') + '><label for="rvLive">Live page link</label><input type="url" id="rvLive" placeholder="https://www.here.com/…" value="' + esc(pst.live_url || '') + '"></div>' +
+        '<div class="rv-f"><label for="rvStPass">Editor passcode</label><input type="password" id="rvStPass" autocomplete="off" value="' + esc(sstore('dxrv-pass')) + '"></div>' +
+        '<div class="rv-actions"><button type="submit" class="rv-btn rv-btn--primary">Update status</button></div><div class="rv-msg" id="rvStMsg" aria-live="polite"></div></form>';
+    }
+    p.innerHTML = h;
+  }
+  function saveStatus(e) {
+    e.preventDefault();
+    var f = e.target, st = (f.querySelector('input[name=st]:checked') || {}).value, pass = $('#rvStPass').value, btn = $('[type=submit]', f);
+    if (!pass) { $('#rvStPass').focus(); $('#rvStMsg').textContent = 'Enter the editor passcode.'; return; }
+    btn.disabled = true; $('#rvStMsg').textContent = 'Saving…';
+    api('/status', { method: 'POST', body: { page: P.slug, status: st, liveUrl: st === 'published' ? $('#rvLive').value.trim() : '', author: store('dxrv-name') || 'Editor', passcode: pass } })
+      .then(function (j) { sstore('dxrv-pass', pass); pst = j.status; showStatus(); renderStatusPop(); if (panel && !panel.hidden) drawPanel(); toast('Status: ' + ST[pst.status].label + '.'); },
+        function (err) { btn.disabled = false; if (err.status === 401) sstore('dxrv-pass', null); $('#rvStMsg').textContent = err.message; });
   }
   function renderVersions() {
     var list = $('#rvLogList');
@@ -152,7 +194,9 @@
     var h = '<div class="rv-dh"><b>' + (tg ? 'Comments on' : 'All comments') + '</b><button type="button" class="rv-x" data-act="close" aria-label="Close">×</button></div>';
     if (tg) h += '<div class="rv-on"><span>' + esc(state.label) + '</span><button type="button" class="rv-link" data-act="all">All comments</button></div>';
     h += '<div class="rv-db">';
-    if (tg) h += '<form class="rv-compose" data-form="new">' + nameField() + '<div class="rv-f"><label for="rvBody">Comment</label><textarea id="rvBody" name="body" rows="3" maxlength="4000" required placeholder="What should change, or what needs checking?"></textarea></div>' +
+    var isOpen = pst.status === 'open';
+    if (tg && !isOpen) h += '<p class="rv-closednote"><b>' + esc(ST[pst.status].label) + '.</b> ' + esc(ST[pst.status].text) + ' You can still read the comments below.</p>';
+    if (tg && isOpen) h += '<form class="rv-compose" data-form="new">' + nameField() + '<div class="rv-f"><label for="rvBody">Comment</label><textarea id="rvBody" name="body" rows="3" maxlength="4000" required placeholder="What should change, or what needs checking?"></textarea></div>' +
       '<div class="rv-actions"><button type="submit" class="rv-btn rv-btn--primary"' + (online ? '' : ' disabled') + '>Post comment</button></div></form>';
     h += '<div class="rv-tabs" role="group" aria-label="Filter">' + ['open', 'resolved', 'all'].map(function (f) {
       var n = f === 'all' ? counts.open + counts.resolved : counts[f];
@@ -167,7 +211,7 @@
         [r].concat(t.replies).map(function (c) {
           return '<div class="rv-c"><div class="rv-c__h"><b>' + esc(c.author) + '</b><time datetime="' + esc(c.created_at) + '" title="' + esc(fmtDate(c.created_at)) + '">' + esc(when(c.created_at)) + '</time></div><p>' + esc(c.body) + '</p></div>';
         }).join('') +
-        '<div class="rv-t__a"><button type="button" class="rv-link" data-act="reply">Reply</button><button type="button" class="rv-link" data-act="' + (r.resolved ? 'reopen' : 'resolve') + '">' + (r.resolved ? 'Reopen' : 'Resolve') + '</button>' +
+        '<div class="rv-t__a">' + (pst.status === 'open' ? '<button type="button" class="rv-link" data-act="reply">Reply</button>' : '') + '<button type="button" class="rv-link" data-act="' + (r.resolved ? 'reopen' : 'resolve') + '">' + (r.resolved ? 'Reopen' : 'Resolve') + '</button>' +
         (tg ? '' : '') + '</div>' +
         '<form class="rv-reply" data-form="reply" data-parent="' + r.id + '" hidden>' + nameField() + '<div class="rv-f"><label for="rvR' + r.id + '">Reply</label><textarea id="rvR' + r.id + '" name="body" rows="2" maxlength="4000" required></textarea></div><div class="rv-actions"><button type="submit" class="rv-btn rv-btn--primary">Reply</button><button type="button" class="rv-btn" data-act="cancel">Cancel</button></div></form>' +
         '</article>';
@@ -322,13 +366,15 @@
   /* ---------- boot ---------- */
   var base = fetch('content.json', { cache: 'no-store' }).then(function (r) { return r.json(); });
   var remote = api('/content?page=' + encodeURIComponent(P.slug)).then(function (j) { return j; }, function (err) { return { error: err }; });
-  Promise.all([base, remote]).then(function (r) {
+  var stReq = api('/status?page=' + encodeURIComponent(P.slug)).then(function (j) { return j.status; }, function () { return null; });
+  Promise.all([base, remote, stReq]).then(function (r) {
+    if (r[2]) pst = r[2];
     var j = r[1];
     C = (j && j.content) || r[0]; saved = JSON.stringify(C);
     bar(); render();
     if (j && j.error) { offline(j.error.message); }
     else { online = true; versions = j.versions || []; editingOn = !!j.editing; refreshComments(); }
-    setStatus();
+    setStatus(); showStatus();
     setInterval(function () { if (!document.hidden && online) refreshComments(); }, 30000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden && online) refreshComments(); });
   }).catch(function () { app.innerHTML = '<p class="rv-fatal">The page content didn’t load. Reload to try again.</p>'; });

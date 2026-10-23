@@ -1,15 +1,7 @@
 // GET  /api/content?page=docs-mcp   → { content|null, versions: [{id, note, author, created_at}] }
 // POST /api/content { page, content, note, author, passcode } → { version }
 // Saving needs the editor passcode set as EDITOR_PASSCODE in Vercel → Settings → Environment Variables.
-import { timingSafeEqual } from 'node:crypto';
-import { db, PAGES, clean, send, readJson, fail } from './_db.js';
-
-function passOk(given) {
-  const want = process.env.EDITOR_PASSCODE || '';
-  if (!want) return null;
-  const a = Buffer.from(String(given || '')), b = Buffer.from(want);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
+import { db, PAGES, clean, send, readJson, fail, passOk } from './_db.js';
 
 export default async function handler(req, res) {
   try {

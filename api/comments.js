@@ -3,6 +3,8 @@
 // PATCH /api/comments { page, id, resolved }           → { comment }
 import { db, PAGES, clean, send, readJson, fail } from './_db.js';
 
+const CLOSED = { closed: 'Comments are closed for this page while the team makes changes.', approved: 'This page is approved, so comments are closed.', published: 'This page is published, so comments are closed.' };
+
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
@@ -21,6 +23,8 @@ export default async function handler(req, res) {
         const row = await db().setResolved(id, !!b.resolved, page);
         return row ? send(res, 200, { comment: row }) : send(res, 404, { error: 'Comment not found.' });
       }
+      const st = await db().getStatus(page);
+      if (st && st.status !== 'open') return send(res, 403, { error: CLOSED[st.status] || 'Comments are closed for this page.' });
       const c = {
         page,
         target: clean(b.target, 80),
