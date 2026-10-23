@@ -232,7 +232,7 @@
     linkLabel: 'Link label', linkHref: 'Link URL', cards: 'Tool cards', name: 'Tool name', text: 'Description', limits: 'Limits line', promptLabel: 'Prompt label', promptButton: 'Prompt button label',
     promptLinkLabel: 'Prompt link label', promptLinkHref: 'Prompt link URL', promptHelper: 'Prompt helper line', items: 'Questions', q: 'Question', a: 'Answer' };
   var drawer = null, renderT = null;
-  function lbl(k) { return LABELS[k] || k; }
+  function lbl(k) { return (P.labels && P.labels[k]) || LABELS[k] || k; }
   function sing(k) { return lbl(k).replace(/s$/, ''); }
   function isLong(k, v) { return k === 'code' || k === 'sub' || k === 'body' || k === 'a' || k === 'prompt' || String(v).length > 70; }
   function field(path, key, val) {

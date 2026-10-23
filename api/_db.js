@@ -49,7 +49,7 @@ let store = null;
 export function db() { if (!store) store = process.env.DX_REVIEW_DB === 'memory' ? memoryStore() : neonStore(); return store; }
 
 // Pages this review API accepts. Add a slug here when a new page gets a review view.
-export const PAGES = new Set(['docs-mcp']);
+export const PAGES = new Set(['docs-mcp', 'hlr-mcp']);
 
 export function clean(s, max) { return String(s == null ? '' : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, max); }
 

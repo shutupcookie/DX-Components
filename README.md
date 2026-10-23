@@ -10,7 +10,7 @@ One static site: no build step.
 | `/cta` | DX CTA explorer: 8 variants (single / pair / list / card × dark / light), 4 action types |
 | `/banner` | DX Banner explorer: 8 variants (button / copy URL / copy code / download × dark / light), split or stacked |
 | `/examples/docs-mcp`, `/examples/hlr-mcp` | Page examples: full pages built from the components, with a “Show components” overlay and a build list |
-| `/review/docs-mcp` | Page review: the Docs MCP page with shared comments and copy versions (see below) |
+| `/review/docs-mcp`, `/review/hlr-mcp` | Page reviews: the Docs MCP and HLR MCP pages with shared comments and copy versions (see below) |
 | `src/hero/`, `src/cta/`, `src/banner/` | Reference CSS + JS for each component (what every mockup is rendered from). Banner requires the CTA files. |
 
 Each explorer is self-contained (fonts, CSS, JS inlined), so a page can also be opened on its own.
@@ -35,7 +35,7 @@ Add a folder (`/name/index.html`), its source under `src/name/`, and a card on `
 
 ## Page reviews (comments and copy versions)
 
-`/review/docs-mcp` renders the page from `review/docs-mcp/content.json` and adds:
+`/review/docs-mcp` and `/review/hlr-mcp` render each page from its `content.json` and add:
 
 - **Comments.** Comment on any section, tool card or FAQ question, reply, and resolve. Reviewers type their name once (remembered in their browser); there are no accounts. The site's Vercel password protects both the pages and the API.
 - **Edit copy.** A panel with every text on the page and a live preview. **Save new version** needs the editor passcode and appears under **Versions**. The latest saved version is what everyone sees; `content.json` is only the starting copy.
